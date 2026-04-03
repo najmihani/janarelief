@@ -975,13 +975,18 @@ async function simpanRekodKeGS(rekod){
 async function gsRequest(action, payload){
   const url=appData.gsUrl;
   if(!url) throw new Error('No GS URL');
-  const res=await fetch(url,{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({action,...payload})
+  const params=new URLSearchParams({action});
+  Object.entries(payload).forEach(([k,v])=>{
+    params.append(k, typeof v==='object' ? encodeURIComponent(JSON.stringify(v)) : encodeURIComponent(String(v)));
+  });
+  const res=await fetch(`${url}?${params.toString()}`,{
+    method:'GET',
+    redirect:'follow'
   });
   if(!res.ok) throw new Error('HTTP '+res.status);
-  return res.json();
+  const text=await res.text();
+  try{ return JSON.parse(text); }
+  catch(e){ throw new Error('Response bukan JSON: '+text.substring(0,100)); }
 }
 
 function setTodayDate(){
