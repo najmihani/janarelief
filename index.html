@@ -880,7 +880,10 @@ function simpanTetapanLokal(){appData.namaSekolah=document.getElementById('nama-
 async function simpanTetapanKeGS(){
   appData.namaSekolah=document.getElementById('nama-sekolah').value;saveLocal();
   if(!appData.gsUrl){alert('Disimpan lokal.');return;}
-  try{await gsRequest('saveTetapan',{namaSekolah:appData.namaSekolah,waktuLabels:appData.waktuLabels});alert('Tetapan disimpan ke GS!');}
+  try{
+    await gsRequest('saveTetapan',{namaSekolah:appData.namaSekolah,waktuLabels:appData.waktuLabels});
+    alert('Tetapan disimpan ke GS! URL Apps Script turut disimpan dalam Sheet Tetapan.');
+  }
   catch(e){alert('Gagal simpan ke GS.');}
 }
 
@@ -922,6 +925,7 @@ async function muatSemuaData(){
     if(d2.rekod)appData.rekod=d2.rekod;
     if(d3.namaSekolah)appData.namaSekolah=d3.namaSekolah;
     if(d3.waktuLabels)appData.waktuLabels=d3.waktuLabels;
+    if(d3.gsUrl&&d3.gsUrl.trim())appData.gsUrl=d3.gsUrl.trim();
     saveLocal();populatePilihGuru();renderTetapan();
     alert('Semua data berjaya dimuat dari GS!');
   }catch(e){alert('Gagal muat data: '+e.message);}
@@ -955,6 +959,9 @@ function setTodayDate(){
 }
 
 loadLocal();initData();setTodayDate();populatePilihGuru();updateGSBadge();
+if(appData.gsUrl){
+  gsRequest('ping',{}).then(()=>updateGSBadge(true)).catch(()=>updateGSBadge(false));
+}
 </script>
 </body>
 </html>
