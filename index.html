@@ -245,6 +245,24 @@ tr:hover td{background:#f8fafc}
     <div class="form-row col2">
       <div><label>Nama Sekolah</label><input type="text" id="nama-sekolah" placeholder="SMK ..." oninput="simpanTetapanLokal()"></div>
     </div>
+    <div style="margin-bottom:14px">
+      <label>Logo Sekolah (PNG/JPG — akan terpapar dalam PDF)</label>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:8px">
+        <div id="logo-preview" style="width:80px;height:80px;border:2px dashed #cbd5e1;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#f8fafc;overflow:hidden;flex-shrink:0">
+          <span id="logo-placeholder" style="font-size:10px;color:#94a3b8;text-align:center;padding:4px">Tiada<br>Logo</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label class="btn btn-outline" style="cursor:pointer;margin:0;font-size:12px">
+            📁 Pilih Fail Logo
+            <input type="file" id="logo-upload" accept="image/png,image/jpeg,image/jpg" style="display:none" onchange="uploadLogo(this)">
+          </label>
+          <button class="btn btn-gray" onclick="buangLogo()" style="font-size:12px">🗑 Buang Logo</button>
+        </div>
+        <div style="font-size:11px;color:#64748b;line-height:1.8">
+          Format: PNG atau JPG<br>Saiz maksimum: 2MB<br>Cadangan: imej petak atau bulat
+        </div>
+      </div>
+    </div>
     <button class="btn btn-primary" onclick="simpanTetapanKeGS()">💾 Simpan ke GS</button>
   </div>
 
@@ -279,7 +297,7 @@ const DEFAULT_LABELS={
 };
 
 let appData={
-  gsUrl:'',namaSekolah:'',waktuLabels:{...DEFAULT_LABELS},
+  gsUrl:'',namaSekolah:'',logoSekolah:'',waktuLabels:{...DEFAULT_LABELS},
   guru:[],jadual:{},rekod:[],
   pengecualianHariIni:[],guruAbsentHariIni:[],reliefJanaan:[],
   currentPage:1,rekodPerPage:25
@@ -291,6 +309,7 @@ function loadLocal(){
     const d=JSON.parse(localStorage.getItem('reliefAppV3')||'{}');
     if(d.gsUrl)appData.gsUrl=d.gsUrl;
     if(d.namaSekolah)appData.namaSekolah=d.namaSekolah;
+    if(d.logoSekolah)appData.logoSekolah=d.logoSekolah;
     if(d.waktuLabels)appData.waktuLabels=d.waktuLabels;
     if(d.guru)appData.guru=d.guru;
     if(d.jadual)appData.jadual=d.jadual;
@@ -301,6 +320,7 @@ function loadLocal(){
 function saveLocal(){
   localStorage.setItem('reliefAppV3',JSON.stringify({
     gsUrl:appData.gsUrl,namaSekolah:appData.namaSekolah,
+    logoSekolah:appData.logoSekolah,
     waktuLabels:appData.waktuLabels,guru:appData.guru,
     jadual:appData.jadual,rekod:appData.rekod
   }));
@@ -561,17 +581,42 @@ function cetakPDF(){
   const tarikh=document.getElementById('tarikh-input').value;
   const hari=document.getElementById('hari-input').value;
   const sekolah=appData.namaSekolah||'Nama Sekolah';
-  doc.setFillColor(26,86,219);doc.rect(0,0,210,32,'F');
-  doc.setTextColor(255,255,255);doc.setFontSize(16);doc.setFont('helvetica','bold');
-  doc.text('JADUAL RELIEF',105,13,{align:'center'});
-  doc.setFontSize(10);doc.setFont('helvetica','normal');
-  doc.text(sekolah,105,20,{align:'center'});
-  doc.text(`${formatTarikh(tarikh)} | ${hari}`,105,27,{align:'center'});
+
+  let headerH=42;
+  if(appData.logoSekolah){headerH=55;}
+
+  doc.setFillColor(26,86,219);doc.rect(0,0,210,headerH,'F');
+  doc.setTextColor(255,255,255);
+
+  if(appData.logoSekolah){
+    try{
+      doc.addImage(appData.logoSekolah,'PNG',88,4,24,24);
+      doc.setFontSize(14);doc.setFont('helvetica','bold');
+      doc.text('JADUAL RELIEF',105,34,{align:'center'});
+      doc.setFontSize(9);doc.setFont('helvetica','normal');
+      doc.text(sekolah,105,41,{align:'center'});
+      doc.text(`${formatTarikh(tarikh)} | ${hari}`,105,48,{align:'center'});
+    }catch(e){
+      doc.setFontSize(14);doc.setFont('helvetica','bold');
+      doc.text('JADUAL RELIEF',105,16,{align:'center'});
+      doc.setFontSize(9);doc.setFont('helvetica','normal');
+      doc.text(sekolah,105,23,{align:'center'});
+      doc.text(`${formatTarikh(tarikh)} | ${hari}`,105,30,{align:'center'});
+    }
+  }else{
+    doc.setFontSize(16);doc.setFont('helvetica','bold');
+    doc.text('JADUAL RELIEF',105,16,{align:'center'});
+    doc.setFontSize(10);doc.setFont('helvetica','normal');
+    doc.text(sekolah,105,24,{align:'center'});
+    doc.text(`${formatTarikh(tarikh)} | ${hari}`,105,31,{align:'center'});
+  }
+
   doc.setTextColor(0,0,0);
-  let y=38;
+  let y=headerH+8;
   const absentNama=appData.guruAbsentHariIni.map(g=>g.nama).join(', ');
   const lines=doc.splitTextToSize('Guru Tidak Hadir: '+absentNama,182);
   doc.setFontSize(9);doc.text(lines,14,y);y+=lines.length*5+6;
+
   const byAbsent={};
   appData.reliefJanaan.forEach(r=>{if(!byAbsent[r.absentId])byAbsent[r.absentId]={nama:r.absentNama,items:[]};byAbsent[r.absentId].items.push(r);});
   Object.values(byAbsent).forEach(({nama,items})=>{
@@ -755,6 +800,40 @@ function renderTetapan(){
   document.getElementById('waktu-config-grid').innerHTML=SLOT_KEYS.map(s=>`
     <div><label style="font-size:11px;color:#64748b">${s}</label>
     <input class="input-sm" id="wlabel-${s}" value="${appData.waktuLabels[s]||s}" ${REHAT_SLOTS.includes(s)?'style="background:#fef9c3"':''}></div>`).join('');
+  renderLogoPreview();
+}
+
+function renderLogoPreview(){
+  const preview=document.getElementById('logo-preview');
+  const placeholder=document.getElementById('logo-placeholder');
+  if(appData.logoSekolah){
+    placeholder.style.display='none';
+    let img=preview.querySelector('img');
+    if(!img){img=document.createElement('img');img.style.cssText='width:100%;height:100%;object-fit:contain';preview.appendChild(img);}
+    img.src=appData.logoSekolah;
+  }else{
+    placeholder.style.display='block';
+    const img=preview.querySelector('img');
+    if(img)img.remove();
+  }
+}
+
+function uploadLogo(input){
+  const file=input.files[0];
+  if(!file)return;
+  if(file.size>2*1024*1024){alert('Saiz fail terlalu besar. Maksimum 2MB.');input.value='';return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    appData.logoSekolah=e.target.result;
+    saveLocal();renderLogoPreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+function buangLogo(){
+  appData.logoSekolah='';
+  saveLocal();renderLogoPreview();
+  document.getElementById('logo-upload').value='';
 }
 
 function renderRenameGuru(){
@@ -768,11 +847,31 @@ function renderRenameGuru(){
 }
 
 function simpanNamaGuru(){
-  appData.guru.forEach(g=>{const el=document.getElementById('rename-'+g.id);if(el&&el.value.trim())g.nama=el.value.trim();});
-  saveLocal();populatePilihGuru();
+  // Update nama dalam appData.guru
+  appData.guru.forEach(g=>{
+    const el=document.getElementById('rename-'+g.id);
+    if(el&&el.value.trim()) g.nama=el.value.trim();
+  });
+
+  // Bina map id->nama baru
+  const namaMap={};
+  appData.guru.forEach(g=>{namaMap[g.id]=g.nama;});
+
+  // BUGFIX: Update nama dalam appData.jadual (semua 5 hari) — nama disimpan dalam jadual GS
+  // Tiada nama dalam objek jadual di HTML (jadual hanya ada slot data), jadi ini cukup.
+  // Nama guru dalam Sheet Jadual kena update melalui GS.
+
+  saveLocal();
+  populatePilihGuru();
+
   if(appData.gsUrl){
-    gsRequest('saveGuru',{guru:appData.guru}).then(()=>alert('Nama guru disimpan ke GS!')).catch(()=>alert('Disimpan lokal sahaja.'));
-  }else alert('Nama guru disimpan lokal!');
+    // Hantar saveGuru — GS akan update Sheet Guru DAN Sheet Jadual serentak
+    gsRequest('saveGuruNama',{guru:appData.guru})
+      .then(()=>alert('Nama guru berjaya disimpan ke Sheet Guru dan Sheet Jadual!'))
+      .catch(()=>alert('Disimpan lokal sahaja. Semak sambungan GS.'));
+  }else{
+    alert('Nama guru disimpan lokal! Sambungkan GS untuk simpan online.');
+  }
 }
 
 function simpanGSUrl(){appData.gsUrl=document.getElementById('gs-url').value.trim();saveLocal();}
