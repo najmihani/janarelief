@@ -756,12 +756,12 @@ function tukarHariJadual(h,el){
 async function simpanJadualHariIni(){
   if(!appData.gsUrl){alert('Sila set URL GS dahulu.');return;}
   const btn=event.target;btn.disabled=true;btn.innerHTML='Menyimpan...';
-  const updates=[];
-  appData.guru.forEach(g=>{
-    const j=getJadualGuru(g.id,hariAktif);
-    updates.push({id:g.id,hari:hariAktif,...j});
-  });
-  try{await gsRequest('saveJadual',{updates});saveLocal();alert('Jadual '+hariAktif+' berjaya disimpan!');}catch(e){alert('Gagal: '+e.message);}
+  saveLocal();
+  try{
+    const updates=appData.guru.map(g=>({id:g.id,hari:hariAktif,...getJadualGuru(g.id,hariAktif)}));
+    await simpanBatch(updates);
+    alert('Jadual '+hariAktif+' berjaya disimpan!');
+  }catch(e){alert('Gagal: '+e.message);}
   btn.disabled=false;btn.innerHTML='💾 Simpan Hari Ini';
 }
 
@@ -769,15 +769,24 @@ async function simpanSemuaHari(){
   if(!appData.gsUrl){alert('Sila set URL GS dahulu.');return;}
   if(!confirm('Simpan jadual UNTUK SEMUA HARI ke GS? Ini mungkin ambil masa.'))return;
   const btn=event.target;btn.disabled=true;btn.innerHTML='Menyimpan...';
-  let allUpdates=[];
-  HARI_LIST.forEach(h=>{
-    appData.guru.forEach(g=>{
-      const j=getJadualGuru(g.id,h);
-      allUpdates.push({id:g.id,hari:h,...j});
+  saveLocal();
+  try{
+    let allUpdates=[];
+    HARI_LIST.forEach(h=>{
+      appData.guru.forEach(g=>allUpdates.push({id:g.id,hari:h,...getJadualGuru(g.id,h)}));
     });
-  });
-  try{await gsRequest('saveJadual',{updates:allUpdates});saveLocal();alert('Semua jadual berjaya disimpan!');}catch(e){alert('Gagal: '+e.message);}
+    await simpanBatch(allUpdates);
+    alert('Semua jadual (5 hari) berjaya disimpan!');
+  }catch(e){alert('Gagal: '+e.message);}
   btn.disabled=false;btn.innerHTML='💾 Simpan Semua Hari';
+}
+
+// Hantar data dalam kelompok kecil supaya URL tidak terlalu panjang
+async function simpanBatch(updates, saizKelompok=10){
+  for(let i=0;i<updates.length;i+=saizKelompok){
+    const kelompok=updates.slice(i,i+saizKelompok);
+    await gsRequest('saveJadual',{updates:kelompok});
+  }
 }
 
 async function muatJadualDariGS(){
