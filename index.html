@@ -22,38 +22,82 @@ body{font-family:sans-serif;background:#f0f4f8;color:#1a202c;font-size:14px}
 .card-title{font-size:14px;font-weight:700;color:#1a56db;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #e2e8f0}
 label{display:block;font-size:12px;color:#475569;margin-bottom:5px;font-weight:500}
 select,input[type=text],input[type=date]{width:100%;padding:8px 11px;border:1px solid #cbd5e1;border-radius:7px;font-size:13px;color:#1a202c;background:#fff}
+select:focus,input:focus{outline:none;border-color:#1a56db;box-shadow:0 0 0 2px rgba(26,86,219,.12)}
 .btn{padding:8px 16px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:6px;transition:all .15s}
-.btn-primary{background:#1a56db;color:#fff}
-.btn-success{background:#16a34a;color:#fff}
-.btn-gray{background:#e2e8f0;color:#475569}
-.btn-danger{background:#ef4444;color:#fff}
+.btn-primary{background:#1a56db;color:#fff}.btn-primary:hover{background:#1649c0}
+.btn-primary:disabled{background:#93b4f0;cursor:not-allowed}
+.btn-success{background:#16a34a;color:#fff}.btn-success:hover{background:#15803d}
+.btn-outline{background:#fff;color:#1a56db;border:1px solid #1a56db}.btn-outline:hover{background:#eff6ff}
+.btn-gray{background:#e2e8f0;color:#475569}.btn-gray:hover{background:#cbd5e1}
+.btn-amber{background:#d97706;color:#fff}.btn-amber:hover{background:#b45309}
+.btn-danger{background:#ef4444;color:#fff}.btn-danger:hover{background:#dc2626}
 .form-row{display:grid;gap:12px;margin-bottom:12px}
 .form-row.col2{grid-template-columns:1fr 1fr}
 .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
 .badge-blue{background:#dbeafe;color:#1e40af}
+.badge-green{background:#dcfce7;color:#166534}
+.badge-red{background:#fee2e2;color:#991b1b}
+.badge-amber{background:#fef3c7;color:#92400e}
 .badge-gray{background:#f1f5f9;color:#475569}
 .alert{padding:11px 14px;border-radius:8px;font-size:13px;margin-bottom:12px;line-height:1.5}
 .alert-info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+.alert-success{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534}
+.alert-warning{background:#fffbeb;border:1px solid #fde68a;color:#92400e}
+.alert-danger{background:#fef2f2;border:1px solid #fecaca;color:#991b1b}
 table{width:100%;border-collapse:collapse;font-size:12px}
-th{background:#f1f5f9;padding:8px 9px;text-align:left;font-weight:600;color:#475569;border-bottom:1px solid #e2e8f0}
+th{background:#f1f5f9;padding:8px 9px;text-align:left;font-weight:600;color:#475569;border-bottom:1px solid #e2e8f0;white-space:nowrap}
 td{padding:7px 9px;border-bottom:1px solid #f1f5f9;color:#334155}
+tr:hover td{background:#f8fafc}
 .step-indicator{display:flex;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:4px}
 .step{display:flex;align-items:center;gap:6px}
-.step-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.step-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.step.done .step-num{background:#16a34a;color:#fff}
 .step.active .step-num{background:#1a56db;color:#fff}
 .step.pending .step-num{background:#e2e8f0;color:#94a3b8}
 .step-label{font-size:11px;font-weight:500}
+.step.done .step-label{color:#16a34a}
+.step.active .step-label{color:#1a56db}
+.step.pending .step-label{color:#94a3b8}
 .step-line{flex:1;height:2px;background:#e2e8f0;min-width:12px}
-.guru-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:7px}
-.guru-check-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid #e2e8f0;border-radius:7px;cursor:pointer}
+.step-line.done{background:#16a34a}
+.guru-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:7px;margin-top:8px}
+.guru-check-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid #e2e8f0;border-radius:7px;cursor:pointer;transition:all .15s}
+.guru-check-item:hover{background:#f8fafc;border-color:#93b4f0}
 .guru-check-item.checked{background:#eff6ff;border-color:#1a56db}
+.guru-check-item input{cursor:pointer;width:14px;height:14px}
 .search-box{padding:8px 11px;border:1px solid #cbd5e1;border-radius:7px;font-size:13px;width:100%;margin-bottom:10px}
-.jadual-wrap{overflow-x:auto}
+.search-box:focus{outline:none;border-color:#1a56db}
+.stat-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:14px}
+.stat-card{background:#fff;border-radius:8px;padding:14px;border:1px solid #e2e8f0;text-align:center}
+.stat-num{font-size:22px;font-weight:700;color:#1a56db}
+.stat-label{font-size:11px;color:#64748b;margin-top:4px}
+.gs-config{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px;margin-bottom:14px}
+.gs-url-input{width:100%;padding:8px 11px;border:1px solid #bfdbfe;border-radius:7px;font-size:13px;font-family:monospace}
+.loading{display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hari-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.hari-tab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid #e2e8f0;background:#fff;color:#64748b;transition:all .15s}
+.hari-tab.active{background:#1a56db;color:#fff;border-color:#1a56db}
+.hari-tab:hover:not(.active){background:#f1f5f9}
+.jadual-wrap{overflow-x:auto;border-radius:8px;border:1px solid #e2e8f0}
 .jadual-table{min-width:1000px;border-collapse:collapse}
-.jadual-table th{background:#1a56db;color:#fff;padding:8px 7px;font-size:11px}
-.cell-input{width:100%;border:none;background:transparent;font-size:11px;text-align:center}
-.guru-absent-tag{display:inline-flex;align-items:center;gap:5px;background:#fee2e2;color:#991b1b;padding:4px 9px;border-radius:20px;font-size:12px;margin:3px}
-.guru-absent-tag button{background:none;border:none;cursor:pointer;color:#991b1b;font-weight:bold}
+.jadual-table th{background:#1a56db;color:#fff;padding:8px 7px;font-size:11px;font-weight:600;white-space:nowrap}
+.jadual-table td{padding:5px 6px;border-bottom:1px solid #f1f5f9;border-right:1px solid #f1f5f9;vertical-align:middle}
+.jadual-table tr:hover td{background:#f0f7ff}
+.cell-input{width:100%;border:none;background:transparent;font-size:11px;padding:2px 3px;text-align:center;min-width:80px}
+.cell-input:focus{outline:1px solid #1a56db;border-radius:3px;background:#fff}
+.rehat-cell{background:#fef9c3;text-align:center;font-size:10px;color:#854d0e;font-weight:600}
+.guru-absent-tag{display:inline-flex;align-items:center;gap:5px;background:#fee2e2;color:#991b1b;padding:4px 9px;border-radius:20px;font-size:12px;font-weight:500;margin:3px}
+.guru-absent-tag button{background:none;border:none;cursor:pointer;color:#991b1b;font-size:13px;line-height:1;padding:0}
+.rekod-filter{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
+.rekod-filter>div{display:flex;flex-direction:column;gap:4px}
+.pagination{display:flex;gap:5px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.page-btn{padding:4px 9px;border:1px solid #e2e8f0;border-radius:5px;cursor:pointer;font-size:12px;background:#fff}
+.page-btn.active{background:#1a56db;color:#fff;border-color:#1a56db}
+.waktu-config-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.input-sm{padding:6px 9px;border:1px solid #cbd5e1;border-radius:6px;font-size:12px;width:100%}
+.input-sm:focus{outline:none;border-color:#1a56db}
+.rename-item{display:flex;align-items:center;gap:5px;background:#fff;border:1px solid #e2e8f0;padding:5px;border-radius:8px}
 </style>
 </head>
 <body>
@@ -61,9 +105,12 @@ td{padding:7px 9px;border-bottom:1px solid #f1f5f9;color:#334155}
 <div class="app-header">
   <div>
     <h1>📚 Sistem Jana Relief</h1>
-    <p>Auto-assign cikgu ganti secara adil & pintar</p>
+    <p>Auto-assign cikgu ganti secara adil</p>
   </div>
-  <div style="margin-left:auto"><span id="gs-status-badge" class="badge badge-gray">Status GS</span></div>
+  <div style="margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <span id="gs-status-badge" class="badge badge-gray">Tidak Disambung</span>
+    <button class="btn" style="background:rgba(255,255,255,.15);color:#fff;font-size:12px;padding:6px 12px" onclick="showTab('tetapan')">⚙ Tetapan</button>
+  </div>
 </div>
 
 <div class="nav-tabs">
@@ -76,360 +123,730 @@ td{padding:7px 9px;border-bottom:1px solid #f1f5f9;color:#334155}
 <div class="page active" id="page-jana">
   <div class="step-indicator">
     <div class="step active" id="step1-ind"><div class="step-num">1</div><div class="step-label">Pilih Guru & Tarikh</div></div>
-    <div class="step-line"></div>
-    <div class="step pending" id="step2-ind"><div class="step-num">2</div><div class="step-label">Pengecualian</div></div>
-    <div class="step-line"></div>
-    <div class="step pending" id="step3-ind"><div class="step-num">3</div><div class="step-label">Hasil Janaan</div></div>
+    <div class="step-line" id="line1"></div>
+    <div class="step pending" id="step2-ind"><div class="step-num">2</div><div class="step-label">Tetapkan Pengecualian</div></div>
+    <div class="step-line" id="line2"></div>
+    <div class="step pending" id="step3-ind"><div class="step-num">3</div><div class="step-label">Jana & Cetak</div></div>
   </div>
 
   <div id="step1-panel">
     <div class="card">
-      <div class="card-title">Langkah 1: Maklumat Asas</div>
+      <div class="card-title">Maklumat Ketidakhadiran</div>
       <div class="form-row col2">
-        <div><label>Tarikh</label><input type="date" id="tarikh-input"></div>
+        <div><label>Tarikh</label><input type="date" id="tarikh-input" onchange="autoSetHari()"></div>
         <div><label>Hari</label>
           <select id="hari-input">
             <option>Isnin</option><option>Selasa</option><option>Rabu</option><option>Khamis</option><option>Jumaat</option>
           </select>
         </div>
       </div>
-      <div style="margin-bottom:15px">
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;background:#fffbeb;padding:10px;border-radius:8px;border:1px solid #fde68a">
-          <input type="checkbox" id="mod-peperiksaan" style="width:18px;height:18px">
-          <span style="font-weight:bold;color:#92400e">Aktifkan Mod Peperiksaan (Kekalkan pengawas sama)</span>
-        </label>
-      </div>
       <div>
-        <label>Pilih Guru Tidak Hadir</label>
-        <select id="pilih-guru-absent" onchange="tambahGuruAbsent()"><option value="">-- Pilih Nama --</option></select>
-        <div id="guru-absent-list" style="margin-top:10px"></div>
+        <label>Guru Yang Tidak Hadir / Urusan Luar</label>
+        <select id="pilih-guru-absent" onchange="tambahGuruAbsent()"><option value="">-- Pilih Guru --</option></select>
+        <div id="guru-absent-list" style="margin-top:8px;min-height:30px;display:flex;flex-wrap:wrap"></div>
       </div>
-      <div style="margin-top:20px"><button class="btn btn-primary" onclick="keStep2()">Seterusnya →</button></div>
+      <div style="margin-top:14px"><button class="btn btn-primary" onclick="keStep2()">Seterusnya →</button></div>
     </div>
   </div>
 
   <div id="step2-panel" style="display:none">
     <div class="card">
-      <div class="card-title">Langkah 2: Pengecualian Guru (Hari Ini Sahaja)</div>
-      <input class="search-box" placeholder="Cari nama guru..." id="cari-pengecualian" oninput="renderPengecualian()">
+      <div class="card-title">Pengecualian Guru Hari Ini</div>
+      <div class="alert alert-info">Tandakan guru yang <strong>tidak boleh</strong> diberi relif hari ini sahaja. Ini bersifat sementara.</div>
+      <input class="search-box" placeholder="Cari nama guru..." id="cari-pengecualian" oninput="filterPengecualian()">
       <div id="pengecualian-grid" class="guru-grid"></div>
-      <div style="margin-top:20px;display:flex;gap:10px">
-        <button class="btn btn-success" onclick="keStep3()">⚡ Jana Relief Sekarang</button>
+      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-success" onclick="simpanPengecualian()">💾 Simpan Pengecualian</button>
         <button class="btn btn-gray" onclick="backStep1()">← Kembali</button>
       </div>
     </div>
   </div>
 
   <div id="step3-panel" style="display:none">
-    <div id="relief-output"></div>
-    <div style="margin-top:15px">
-        <button class="btn btn-gray" onclick="backStep2()">← Kembali Edit</button>
+    <div class="card">
+      <div class="card-title">Jana Jadual Relief</div>
+      <div id="jana-info"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+        <button class="btn btn-primary" onclick="janaRelief()">⚡ Jana Relief</button>
+        <button class="btn btn-gray" onclick="backStep2()">← Kembali</button>
+      </div>
     </div>
+    <div id="relief-output"></div>
   </div>
 </div>
 
 <div class="page" id="page-jadual">
-    <div class="card">
-        <div class="card-title">Jadual Mengajar Mingguan</div>
-        <div style="display:flex;gap:10px;margin-bottom:15px">
-            <select id="pilih-hari-jadual" style="width:150px" onchange="renderJadualTable()">
-                <option>Isnin</option><option>Selasa</option><option>Rabu</option><option>Khamis</option><option>Jumaat</option>
-            </select>
-            <input type="text" id="cari-guru-jadual" class="search-box" style="margin:0" placeholder="Cari guru..." oninput="renderJadualTable()">
-            <button class="btn btn-primary" onclick="simpanSemuaJadual()">Simpan Jadual</button>
-        </div>
-        <div class="jadual-wrap">
-            <table class="jadual-table">
-                <thead id="jadual-head"></thead>
-                <tbody id="jadual-body"></tbody>
-            </table>
-        </div>
+  <div class="card">
+    <div class="card-title">Jadual Mengajar Guru</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
+      <input class="search-box" style="margin:0;flex:1;min-width:180px" placeholder="Cari nama guru..." id="cari-guru" oninput="renderJadualTable()">
+      <button class="btn btn-primary" onclick="simpanJadualHariIni()">💾 Simpan Hari Ini</button>
+      <button class="btn btn-amber" onclick="simpanSemuaHari()">💾 Simpan Semua Hari</button>
+      <button class="btn btn-outline" onclick="muatJadualDariGS()">↻ Muat dari GS</button>
     </div>
+    <div class="hari-tabs">
+      <div class="hari-tab active" onclick="tukarHariJadual('Isnin',this)">Isnin</div>
+      <div class="hari-tab" onclick="tukarHariJadual('Selasa',this)">Selasa</div>
+      <div class="hari-tab" onclick="tukarHariJadual('Rabu',this)">Rabu</div>
+      <div class="hari-tab" onclick="tukarHariJadual('Khamis',this)">Khamis</div>
+      <div class="hari-tab" onclick="tukarHariJadual('Jumaat',this)">Jumaat</div>
+    </div>
+    <div class="jadual-wrap">
+      <table class="jadual-table">
+        <thead id="jadual-thead"></thead>
+        <tbody id="jadual-tbody"></tbody>
+      </table>
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:#64748b">
+      Format: <strong>Kelas - Subjek</strong> contoh: <code>4A - Matematik</code> | Kosong = tiada kelas
+    </div>
+  </div>
 </div>
 
 <div class="page" id="page-rekod">
-    <div class="card">
-        <div class="card-title">Rekod Sejarah Relief</div>
-        <div id="rekod-list"></div>
+  <div class="stat-cards" id="rekod-stats"></div>
+  <div class="card">
+    <div class="card-title">Rekod Relief</div>
+    <div class="rekod-filter">
+      <div><label>Dari Tarikh</label><input type="date" id="filter-dari" oninput="filterRekod()"></div>
+      <div><label>Hingga Tarikh</label><input type="date" id="filter-hingga" oninput="filterRekod()"></div>
+      <div><label>Guru Tidak Hadir</label>
+        <select id="filter-guru" onchange="filterRekod()" style="width:160px"><option value="">Semua Guru</option></select>
+      </div>
+      <div style="margin-top:auto;display:flex;gap:6px">
+        <button class="btn btn-outline" onclick="resetFilterRekod()">Reset</button>
+        <button class="btn btn-success" onclick="exportRekodPDF()">📥 Export PDF</button>
+      </div>
     </div>
+    <div id="rekod-table-wrap"></div>
+    <div class="pagination" id="rekod-pagination"></div>
+  </div>
 </div>
 
 <div class="page" id="page-tetapan">
-    <div class="card">
-        <div class="card-title">Konfigurasi Sistem</div>
-        <label>URL Google Apps Script</label>
-        <input type="text" id="gs-url" placeholder="https://script.google.com/..." onchange="appData.gsUrl=this.value;saveLocal()">
-        <div style="margin-top:15px">
-            <button class="btn btn-primary" onclick="muatDataGS()">Muat Data dari Cloud</button>
-        </div>
+  <div class="card">
+    <div class="card-title">Sambungan Google Sheet</div>
+    <div class="gs-config">
+      <label>URL Google Apps Script (Web App)</label>
+      <input class="gs-url-input" id="gs-url" placeholder="https://script.google.com/macros/s/.../exec" oninput="simpanGSUrl()">
+      <p style="font-size:12px;color:#3b82f6;margin-top:5px">Paste URL dari Deploy → New Deployment</p>
     </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="testGSConnection()">🔌 Test Sambungan</button>
+      <button class="btn btn-outline" onclick="muatSemuaData()">↻ Muat Semua Data dari GS</button>
+    </div>
+    <div id="gs-test-result" style="margin-top:10px"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Tetapan Sekolah</div>
+    <div class="form-row col2">
+      <div><label>Nama Sekolah</label><input type="text" id="nama-sekolah" placeholder="SMK ..." oninput="simpanTetapanLokal()"></div>
+    </div>
+    <div style="margin-bottom:14px">
+      <label>Logo Sekolah (PNG/JPG — akan terpapar dalam PDF)</label>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:8px">
+        <div id="logo-preview" style="width:80px;height:80px;border:2px dashed #cbd5e1;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#f8fafc;overflow:hidden;flex-shrink:0">
+          <span id="logo-placeholder" style="font-size:10px;color:#94a3b8;text-align:center;padding:4px">Tiada<br>Logo</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label class="btn btn-outline" style="cursor:pointer;margin:0;font-size:12px">
+            📁 Pilih Fail Logo
+            <input type="file" id="logo-upload" accept="image/png,image/jpeg,image/jpg" style="display:none" onchange="uploadLogo(this)">
+          </label>
+          <button class="btn btn-gray" onclick="buangLogo()" style="font-size:12px">🗑 Buang Logo</button>
+        </div>
+        <div style="font-size:11px;color:#64748b;line-height:1.8">
+          Format: PNG atau JPG<br>Saiz maksimum: 2MB<br>Cadangan: imej petak atau bulat
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="simpanTetapanKeGS()">💾 Simpan ke GS</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Label Waktu</div>
+    <p style="font-size:12px;color:#64748b;margin-bottom:12px">Ubah nama label waktu. Masa bermula 7:30 pagi, setiap slot 30 minit.</p>
+    <div class="waktu-config-grid" id="waktu-config-grid"></div>
+    <div style="margin-top:12px"><button class="btn btn-primary" onclick="simpanWaktuKeGS()">💾 Simpan Label Waktu</button></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Pengurusan Nama Guru</div>
+    
+    <div style="display:flex; gap:8px; margin-bottom:15px; background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0; align-items:center">
+      <input type="text" id="nama-guru-baru" placeholder="Masukkan nama guru baharu..." class="input-sm" style="flex:1">
+      <button class="btn btn-success" onclick="tambahGuruBaharu()">+ Tambah Guru</button>
+    </div>
+
+    <input class="search-box" placeholder="Cari guru..." id="cari-rename" oninput="renderRenameGuru()">
+    <div id="rename-guru-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px;max-height:400px;overflow-y:auto"></div>
+    <div style="margin-top:12px"><button class="btn btn-primary" onclick="simpanNamaGuru()">💾 Simpan Nama Guru</button></div>
+  </div>
 </div>
 
 <script>
-const SLOT_KEYS=['W1','W2','W3','W4','W5','W6','W7','W8','W9','W10','W11','W12'];
+const SLOT_KEYS=['W1','W2','W3','W4','Rehat1','W5','Rehat2','W6','W7','W8','W9','W10','W11','W12','W13','W14'];
+const REHAT_SLOTS=['Rehat1','Rehat2'];
+const WAKTU_AJAR=SLOT_KEYS.filter(s=>!REHAT_SLOTS.includes(s));
 const HARI_LIST=['Isnin','Selasa','Rabu','Khamis','Jumaat'];
-
-let appData = {
-    gsUrl: '',
-    guru: [], 
-    jadual: {}, 
-    rekod: [],
-    guruAbsentHariIni: [],
-    pengecualianHariIni: []
+const DEFAULT_LABELS={
+  W1:'Waktu 1 (7:30-8:00)',W2:'Waktu 2 (8:00-8:30)',W3:'Waktu 3 (8:30-9:00)',
+  W4:'Waktu 4 (9:00-9:30)',Rehat1:'Rehat (9:30-10:00)',W5:'Waktu 5 (10:00-10:30)',
+  Rehat2:'Rehat (10:30-11:00)',W6:'Waktu 6 (11:00-11:30)',W7:'Waktu 7 (11:30-12:00)',
+  W8:'Waktu 8 (12:00-12:30)',W9:'Waktu 9 (12:30-13:00)',W10:'Waktu 10 (13:00-13:30)',
+  W11:'Waktu 11 (13:30-14:00)',W12:'Waktu 12 (14:00-14:30)',W13:'Waktu 13 (14:30-15:00)',
+  W14:'Waktu 14 (15:00-15:30)'
 };
+let appData={
+  gsUrl:'',namaSekolah:'',logoSekolah:'',waktuLabels:{...DEFAULT_LABELS},
+  guru:[],jadual:{},rekod:[],
+  pengecualianHariIni:[],guruAbsentHariIni:[],reliefJanaan:[],
+  currentPage:1,rekodPerPage:25
+};
+let hariAktif='Isnin';
 
-// INITIALIZATION
-function init() {
-    loadLocal();
-    if (appData.guru.length === 0) {
-        // Dummy data jika kosong
-        for(let i=1; i<=70; i++) appData.guru.push({id: 'G'+i, nama: 'GURU '+i});
-    }
-    HARI_LIST.forEach(h => {
-        if (!appData.jadual[h]) appData.jadual[h] = {};
-        appData.guru.forEach(g => {
-            if (!appData.jadual[h][g.id]) {
-                appData.jadual[h][g.id] = Object.fromEntries(SLOT_KEYS.map(s => [s, '']));
-            }
-        });
-    });
-    populateGuruSelect();
-    updateGSBadge();
+function loadLocal(){
+  try{
+    const d=JSON.parse(localStorage.getItem('reliefAppV3')||'{}');
+    if(d.gsUrl)appData.gsUrl=d.gsUrl;
+    if(d.namaSekolah)appData.namaSekolah=d.namaSekolah;
+    if(d.logoSekolah)appData.logoSekolah=d.logoSekolah;
+    if(d.waktuLabels)appData.waktuLabels=d.waktuLabels;
+    if(d.guru)appData.guru=d.guru;
+    if(d.jadual)appData.jadual=d.jadual;
+    if(d.rekod)appData.rekod=d.rekod;
+  }catch(e){}
 }
 
-function saveLocal() { localStorage.setItem('relief_data', JSON.stringify(appData)); }
-function loadLocal() {
-    const d = localStorage.getItem('relief_data');
-    if (d) appData = JSON.parse(d);
+function saveLocal(){
+  localStorage.setItem('reliefAppV3',JSON.stringify({
+    gsUrl:appData.gsUrl,namaSekolah:appData.namaSekolah,
+    logoSekolah:appData.logoSekolah,
+    waktuLabels:appData.waktuLabels,guru:appData.guru,
+    jadual:appData.jadual,rekod:appData.rekod
+  }));
 }
 
-function showTab(t) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active'));
-    document.getElementById('page-'+t).classList.add('active');
-    document.getElementById('tab-'+t).classList.add('active');
-    if (t === 'jadual') renderJadualTable();
-    if (t === 'rekod') renderRekod();
-}
-
-// LOGIK JANA RELIEF (SYARAT KHAS)
-function janaRelief() {
-    const hari = document.getElementById('hari-input').value;
-    const modPeperiksaan = document.getElementById('mod-peperiksaan').checked;
-    const j = appData.jadual[hari];
-    
-    // 1. Dapatkan senarai guru yang layak (Bukan yang absent & bukan yang dikecualikan)
-    const absentIds = appData.guruAbsentHariIni.map(g => g.id);
-    let calonLayak = appData.guru.filter(g => !absentIds.includes(g.id) && !appData.pengecualianHariIni.includes(g.id));
-
-    // 2. Kira 'beban mengajar' guru pada hari tersebut untuk Syarat < 5 Waktu
-    calonLayak = calonLayak.map(g => {
-        let count = 0;
-        SLOT_KEYS.forEach(s => { if(j[g.id][s]) count++; });
-        return { ...g, beban: count, reliefCount: 0 };
-    });
-
-    let hasil = [];
-
-    // Proses mengikut slot waktu
-    SLOT_KEYS.forEach((slot, idx) => {
-        appData.guruAbsentHariIni.forEach(absentGuru => {
-            const infoKelas = j[absentGuru.id][slot];
-            if (!infoKelas || infoKelas.trim() === "") return;
-
-            // Cari guru ganti
-            let ganti = cariGuruGantiPintar(calonLayak, slot, idx, j, modPeperiksaan);
-
-            if (ganti) {
-                ganti.reliefCount++;
-                hasil.push({
-                    slot: slot,
-                    absentNama: absentGuru.nama,
-                    kelas: infoKelas,
-                    gantiNama: ganti.nama,
-                    gantiId: ganti.id
-                });
-            } else {
-                hasil.push({
-                    slot: slot,
-                    absentNama: absentGuru.nama,
-                    kelas: infoKelas,
-                    gantiNama: "TIADA CALON",
-                    gantiId: null
-                });
-            }
-        });
-    });
-
-    return hasil;
-}
-
-function cariGuruGantiPintar(calon, slot, slotIdx, jadual, modPeperiksaan) {
-    // Tapis guru yang MEMANG ada kelas pada waktu itu
-    let freeNow = calon.filter(g => !jadual[g.id][slot]);
-
-    if (freeNow.length === 0) return null;
-
-    // KIRA SKOR / KEUTAMAAN
-    // Kriteria: 
-    // - Beban < 5 (Keutamaan Tinggi)
-    // - Buffer Bersebelahan (Check idx-1 dan idx+1)
-    // - Pernah kena relief (Had 1 atau 2)
-
-    let sorted = freeNow.sort((a, b) => {
-        // Syarat Had Relief: Utamakan yang belum kena (0) berbanding yang dah kena (1)
-        if (a.reliefCount !== b.reliefCount) return a.reliefCount - b.reliefCount;
-
-        // Syarat < 5 Waktu: Utamakan beban rendah
-        if (a.beban <= 5 && b.beban > 5) return -1;
-        if (a.beban > 5 && b.beban <= 5) return 1;
-
-        // Syarat Buffer: Adakah slot sebelah ada kelas?
-        const aHasBuffer = checkBuffer(a.id, slotIdx, jadual);
-        const bHasBuffer = checkBuffer(b.id, slotIdx, jadual);
-        if (aHasBuffer && !bHasBuffer) return -1;
-        if (!aHasBuffer && bHasBuffer) return 1;
-
-        return a.beban - b.beban; // Akhir sekali, ikut jumlah beban terendah
-    });
-
-    // Had maksima 2 relief (Syarat 3)
-    const calonFinal = sorted.find(g => g.reliefCount < 2);
-    return calonFinal || null;
-}
-
-function checkBuffer(guruId, slotIdx, jadual) {
-    const prevSlot = SLOT_KEYS[slotIdx - 1];
-    const nextSlot = SLOT_KEYS[slotIdx + 1];
-    const hasPrev = prevSlot ? jadual[guruId][prevSlot] : false;
-    const hasNext = nextSlot ? jadual[guruId][nextSlot] : false;
-    // Pulangkan true jika "Selesa" (Tiada kelas sebelum & selepas)
-    return !hasPrev && !hasNext;
-}
-
-// STEP NAVIGATION & RENDERING
-function tambahGuruAbsent() {
-    const sel = document.getElementById('pilih-guru-absent');
-    const id = sel.value;
-    if (!id) return;
-    const g = appData.guru.find(x => x.id === id);
-    if (!appData.guruAbsentHariIni.find(x => x.id === id)) {
-        appData.guruAbsentHariIni.push(g);
-        renderAbsentList();
-    }
-}
-
-function renderAbsentList() {
-    const div = document.getElementById('guru-absent-list');
-    div.innerHTML = appData.guruAbsentHariIni.map(g => `
-        <span class="guru-absent-tag">${g.nama} <button onclick="buangAbsent('${g.id}')">×</button></span>
-    `).join('');
-}
-
-function buangAbsent(id) {
-    appData.guruAbsentHariIni = appData.guruAbsentHariIni.filter(x => x.id !== id);
-    renderAbsentList();
-}
-
-function keStep2() {
-    if (appData.guruAbsentHariIni.length === 0) return alert("Pilih guru tidak hadir.");
-    document.getElementById('step1-panel').style.display = 'none';
-    document.getElementById('step2-panel').style.display = 'block';
-    document.getElementById('step2-ind').classList.add('active');
-    renderPengecualian();
-}
-
-function renderPengecualian() {
-    const q = document.getElementById('cari-pengecualian').value.toLowerCase();
-    const grid = document.getElementById('pengecualian-grid');
-    const absentIds = appData.guruAbsentHariIni.map(g => g.id);
-    
-    grid.innerHTML = appData.guru.filter(g => !absentIds.includes(g.id) && g.nama.toLowerCase().includes(q)).map(g => `
-        <div class="guru-check-item ${appData.pengecualianHariIni.includes(g.id)?'checked':''}" onclick="togglePengecualian('${g.id}', this)">
-            <input type="checkbox" ${appData.pengecualianHariIni.includes(g.id)?'checked':''}> ${g.nama}
-        </div>
-    `).join('');
-}
-
-function togglePengecualian(id, el) {
-    if (appData.pengecualianHariIni.includes(id)) {
-        appData.pengecualianHariIni = appData.pengecualianHariIni.filter(x => x.id !== id);
+function initData(){
+  if(!appData.guru.length){
+    appData.guru=Array.from({length:73},(_,i)=>({id:`G${String(i+1).padStart(2,'0')}`,nama:`Guru ${i+1}`}));
+  }
+  HARI_LIST.forEach(hari=>{
+    if(!appData.jadual[hari]){
+      appData.jadual[hari]={};
+      appData.guru.forEach(g=>{appData.jadual[hari][g.id]=Object.fromEntries(WAKTU_AJAR.map(s=>[s,'']));});
     } else {
-        appData.pengecualianHariIni.push(id);
+      appData.guru.forEach(g=>{
+        if(!appData.jadual[hari][g.id]) appData.jadual[hari][g.id]=Object.fromEntries(WAKTU_AJAR.map(s=>[s,'']));
+      });
     }
-    renderPengecualian();
+  });
+  saveLocal();
 }
 
-function keStep3() {
-    const janaan = janaRelief();
-    document.getElementById('step2-panel').style.display = 'none';
-    document.getElementById('step3-panel').style.display = 'block';
-    document.getElementById('step3-ind').classList.add('active');
-    
-    let html = `<div class="card"><div class="card-title">Senarai Relief Janaan</div><table>
-        <tr><th>Waktu</th><th>Guru Tak Hadir</th><th>Kelas</th><th>Guru Ganti</th></tr>`;
-    
-    janaan.forEach(r => {
-        html += `<tr><td>${r.slot}</td><td>${r.absentNama}</td><td>${r.kelas}</td><td><b>${r.gantiNama}</b></td></tr>`;
+function showTab(t){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+t).classList.add('active');
+  document.getElementById('tab-'+t).classList.add('active');
+  if(t==='jadual')renderJadualTable();
+  if(t==='rekod'){populateFilterGuru();renderRekod();}
+  if(t==='tetapan'){renderTetapan();renderRenameGuru();}
+}
+
+// Tambah Guru Baharu ke GS dan Lokal
+async function tambahGuruBaharu() {
+  const inputNama = document.getElementById('nama-guru-baru');
+  const nama = inputNama.value.trim();
+  
+  if (!nama) {
+    alert('Sila masukkan nama guru.');
+    return;
+  }
+
+  const lastId = appData.guru.length > 0 ? parseInt(appData.guru[appData.guru.length - 1].id.substring(1)) : 0;
+  const newId = `G${String(lastId + 1).padStart(2, '0')}`;
+  const guruBaru = { id: newId, nama: nama };
+
+  if (appData.gsUrl) {
+    try {
+      await gsRequest('tambahGuru', { id: newId, nama: nama });
+    } catch (e) {
+      alert('Gagal tambah ke GS, tapi akan ditambah ke lokal: ' + e.message);
+    }
+  }
+
+  appData.guru.push(guruBaru);
+  HARI_LIST.forEach(hari => {
+    if (!appData.jadual[hari]) appData.jadual[hari] = {};
+    appData.jadual[hari][newId] = Object.fromEntries(WAKTU_AJAR.map(s => [s, '']));
+  });
+
+  inputNama.value = '';
+  saveLocal();
+  renderRenameGuru();
+  alert('Guru berjaya ditambah!');
+}
+
+// Padam Guru dari GS dan Lokal
+async function padamGuru(id) {
+  const g = appData.guru.find(x => x.id === id);
+  if (!confirm(`Padam guru "${g.nama}" secara kekal?`)) return;
+
+  if (appData.gsUrl) {
+    try {
+      await gsRequest('padamGuru', { id });
+    } catch (e) {
+      alert('Gagal padam di GS: ' + e.message);
+      return;
+    }
+  }
+
+  appData.guru = appData.guru.filter(x => x.id !== id);
+  HARI_LIST.forEach(hari => {
+    if (appData.jadual[hari]) delete appData.jadual[hari][id];
+  });
+
+  saveLocal();
+  renderRenameGuru();
+  alert('Guru berjaya dipadam.');
+}
+
+function renderRenameGuru(){
+  const q=document.getElementById('cari-rename').value.toLowerCase();
+  const filtered=appData.guru.filter(g=>g.nama.toLowerCase().includes(q));
+  
+  // Penambahan: Butang Padam pada setiap guru
+  document.getElementById('rename-guru-grid').innerHTML=filtered.map(g=>`
+    <div class="rename-item">
+      <input type="text" class="input-sm" value="${g.nama}" onchange="updateNamaLokal('${g.id}',this.value)">
+      <button class="btn btn-danger" style="padding:4px 8px;" onclick="padamGuru('${g.id}')">🗑</button>
+    </div>`).join('');
+}
+
+function updateNamaLokal(id,val){
+  const g=appData.guru.find(x=>x.id===id);
+  if(g)g.nama=val.trim();
+}
+
+async function simpanNamaGuru(){
+  if(!appData.gsUrl){alert('Sila set URL GS dahulu.');return;}
+  const btn=event.target;btn.disabled=true;btn.innerHTML='<span class="loading"></span> Menyimpan...';
+  try{
+    await gsRequest('saveNamaGuru',{updates:appData.guru});
+    saveLocal();alert('Nama guru berjaya disimpan ke GS!');
+  }catch(e){alert('Gagal: '+e.message);}
+  btn.disabled=false;btn.innerHTML='💾 Simpan Nama Guru';
+}
+
+function updateStepIndicator(step){
+  for(let i=1;i<=3;i++){
+    document.getElementById(`step${i}-ind`).className='step '+(i<step?'done':i===step?'active':'pending');
+    if(i<3)document.getElementById(`line${i}`).className='step-line'+(i<step?' done':'');
+  }
+}
+
+function autoSetHari(){
+  const v=document.getElementById('tarikh-input').value;
+  if(!v)return;
+  const days=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
+  const hari=days[new Date(v).getDay()];
+  const sel=document.getElementById('hari-input');
+  for(let o of sel.options){if(o.value===hari){sel.value=hari;break;}}
+}
+
+function populatePilihGuru(){
+  const curr=appData.guruAbsentHariIni.map(g=>g.id);
+  const sel=document.getElementById('pilih-guru-absent');
+  sel.innerHTML='<option value="">-- Pilih Guru --</option>';
+  appData.guru.filter(g=>!curr.includes(g.id)).forEach(g=>{
+    sel.innerHTML+=`<option value="${g.id}">${g.nama}</option>`;
+  });
+}
+
+function tambahGuruAbsent(){
+  const id=document.getElementById('pilih-guru-absent').value;
+  if(!id)return;
+  const g=appData.guru.find(x=>x.id===id);
+  if(g&&!appData.guruAbsentHariIni.find(x=>x.id===id))appData.guruAbsentHariIni.push(g);
+  renderGuruAbsentTags();populatePilihGuru();
+  document.getElementById('pilih-guru-absent').value='';
+}
+
+function removeGuruAbsent(id){
+  appData.guruAbsentHariIni=appData.guruAbsentHariIni.filter(g=>g.id!==id);
+  renderGuruAbsentTags();populatePilihGuru();
+}
+
+function renderGuruAbsentTags(){
+  document.getElementById('guru-absent-list').innerHTML=
+    appData.guruAbsentHariIni.map(g=>`<span class="guru-absent-tag">${g.nama}<button onclick="removeGuruAbsent('${g.id}')">×</button></span>`).join('');
+}
+
+function keStep2(){
+  if(!appData.guruAbsentHariIni.length){alert('Sila pilih sekurang-kurangnya 1 guru.');return;}
+  if(!document.getElementById('tarikh-input').value){alert('Sila pilih tarikh.');return;}
+  document.getElementById('step1-panel').style.display='none';
+  document.getElementById('step2-panel').style.display='block';
+  updateStepIndicator(2);renderPengecualianGrid();
+}
+
+function backStep1(){
+  document.getElementById('step2-panel').style.display='none';
+  document.getElementById('step1-panel').style.display='block';
+  updateStepIndicator(1);
+}
+
+function backStep2(){
+  document.getElementById('step3-panel').style.display='none';
+  document.getElementById('step2-panel').style.display='block';
+  updateStepIndicator(2);
+}
+
+function renderPengecualianGrid(){
+  const absentIds=appData.guruAbsentHariIni.map(g=>g.id);
+  const avail=appData.guru.filter(g=>!absentIds.includes(g.id));
+  document.getElementById('pengecualian-grid').innerHTML=avail.map(g=>`
+    <label class="guru-check-item ${appData.pengecualianHariIni.includes(g.id)?'checked':''}" id="exc-${g.id}">
+      <input type="checkbox" ${appData.pengecualianHariIni.includes(g.id)?'checked':''} onchange="togglePengecualian('${g.id}',this)">
+      <span style="font-size:12px">${g.nama}</span>
+    </label>`).join('');
+}
+
+function filterPengecualian(){
+  const q=document.getElementById('cari-pengecualian').value.toLowerCase();
+  document.querySelectorAll('#pengecualian-grid .guru-check-item').forEach(el=>{
+    el.style.display=el.querySelector('span').textContent.toLowerCase().includes(q)?'':'none';
+  });
+}
+
+function togglePengecualian(id,cb){
+  const label=document.getElementById('exc-'+id);
+  if(cb.checked){if(!appData.pengecualianHariIni.includes(id))appData.pengecualianHariIni.push(id);label.classList.add('checked');}
+  else{appData.pengecualianHariIni=appData.pengecualianHariIni.filter(x=>x!==id);label.classList.remove('checked');}
+}
+
+async function simpanPengecualian(){
+  const btn=event.target;btn.disabled=true;btn.innerHTML='<span class="loading"></span> Menyimpan...';
+  if(appData.gsUrl){
+    const updates=appData.guru.map(g=>({id:g.id,pengecualian:appData.pengecualianHariIni.includes(g.id)?'TRUE':'FALSE'}));
+    try{await gsRequest('savePengecualian',{updates});}catch(e){}
+  }
+  btn.disabled=false;btn.innerHTML='💾 Simpan Pengecualian';
+  document.getElementById('step2-panel').style.display='none';
+  document.getElementById('step3-panel').style.display='block';
+  updateStepIndicator(3);renderJanaInfo();
+}
+
+function renderJanaInfo(){
+  const tarikh=document.getElementById('tarikh-input').value;
+  const hari=document.getElementById('hari-input').value;
+  document.getElementById('jana-info').innerHTML=`
+    <div class="alert alert-info">
+      <strong>Tarikh:</strong> ${formatTarikh(tarikh)} (${hari})<br>
+      <strong>Guru Tidak Hadir:</strong> ${appData.guruAbsentHariIni.map(g=>g.nama).join(', ')}<br>
+      <strong>Guru Dikecualikan:</strong> ${appData.pengecualianHariIni.length} orang
+    </div>`;
+}
+
+function formatTarikh(t){
+  if(!t)return '-';
+  return new Date(t).toLocaleDateString('ms-MY',{day:'2-digit',month:'long',year:'numeric'});
+}
+
+function getJadualGuru(guruId,hari){
+  return (appData.jadual[hari]&&appData.jadual[hari][guruId])||Object.fromEntries(WAKTU_AJAR.map(s=>[s,'']));
+}
+
+function hitungWaktuAjar(guruId,hari){
+  const j=getJadualGuru(guruId,hari);
+  return WAKTU_AJAR.filter(s=>j[s]&&j[s].trim()).length;
+}
+
+function janaRelief(){
+  const tarikh=document.getElementById('tarikh-input').value;
+  const hari=document.getElementById('hari-input').value;
+  const absentIds=appData.guruAbsentHariIni.map(g=>g.id);
+  const exclIds=appData.pengecualianHariIni;
+  const bilAbsent=absentIds.length;
+  
+  const guruAvail=appData.guru.filter(g=>!absentIds.includes(g.id)&&!exclIds.includes(g.id));
+  const reliefCount={};
+  guruAvail.forEach(g=>{reliefCount[g.id]=0;});
+  appData.rekod.filter(r=>r.tarikh===tarikh).forEach(r=>{if(reliefCount[r.guruReliefId]!==undefined)reliefCount[r.guruReliefId]++;});
+
+  const hasil=[];
+  appData.guruAbsentHariIni.forEach(absentGuru=>{
+    const jadualAbsent=getJadualGuru(absentGuru.id,hari);
+    WAKTU_AJAR.forEach(slot=>{
+      const ks=jadualAbsent[slot];
+      if(!ks||!ks.trim())return;
+      const parts=ks.split(' - ');
+      const kelas=parts[0]||ks,subjek=parts[1]||'';
+      
+      const calon=guruAvail.filter(g=>{
+        const j=getJadualGuru(g.id,hari);
+        return (!j[slot]||!j[slot].trim())&&hitungWaktuAjar(g.id,hari)<8;
+      });
+      calon.sort((a,b)=>{
+        const wa=hitungWaktuAjar(a.id,hari),wb=hitungWaktuAjar(b.id,hari);
+        if(wa!==wb)return wa-wb;
+        return (reliefCount[a.id]||0)-(reliefCount[b.id]||0);
+      });
+      const gr=calon[0]||null;
+      if(gr)reliefCount[gr.id]=(reliefCount[gr.id]||0)+1;
+      hasil.push({absentId:absentGuru.id,absentNama:absentGuru.nama,slot,slotLabel:appData.waktuLabels[slot]||slot,kelas,subjek,guruRelifId:gr?.id||null,guruRelifNama:gr?.nama||'-- Tiada Guru --',gabung:false,gabungDengan:null});
     });
-    html += `</table><button class="btn btn-success" style="margin-top:15px" onclick="simpanRekodRelief(${JSON.stringify(janaan).replace(/"/g, '&quot;')})">Sahkan & Simpan</button></div>`;
-    
-    document.getElementById('relief-output').innerHTML = html;
-}
+  });
 
-function simpanRekodRelief(data) {
-    const t = document.getElementById('tarikh-input').value;
-    appData.rekod.push({ tarikh: t, data: data });
-    saveLocal();
-    alert("Rekod disimpan!");
-    location.reload();
-}
-
-function renderJadualTable() {
-    const hari = document.getElementById('pilih-hari-jadual').value;
-    const q = document.getElementById('cari-guru-jadual').value.toLowerCase();
-    const head = document.getElementById('jadual-head');
-    const body = document.getElementById('jadual-body');
-
-    head.innerHTML = `<tr><th>Nama Guru</th>${SLOT_KEYS.map(s => `<th>${s}</th>`).join('')}</tr>`;
-    
-    body.innerHTML = appData.guru.filter(g => g.nama.toLowerCase().includes(q)).map(g => `
-        <tr>
-            <td>${g.nama}</td>
-            ${SLOT_KEYS.map(s => `<td><input class="cell-input" value="${appData.jadual[hari][g.id][s]}" onchange="updateJadual('${hari}','${g.id}','${s}',this.value)"></td>`).join('')}
-        </tr>
-    `).join('');
-}
-
-function updateJadual(h, gid, s, val) {
-    appData.jadual[h][gid][s] = val;
-    saveLocal();
-}
-
-function populateGuruSelect() {
-    const sel = document.getElementById('pilih-guru-absent');
-    appData.guru.forEach(g => {
-        const opt = document.createElement('option');
-        opt.value = g.id; opt.text = g.nama;
-        sel.add(opt);
+  if(bilAbsent>=6){
+    const bySlot={};
+    hasil.forEach((r,i)=>{if(!bySlot[r.slot])bySlot[r.slot]=[];bySlot[r.slot].push({...r,idx:i});});
+    Object.values(bySlot).forEach(items=>{
+      if(items.length>=2){
+        for(let i=1;i<items.length;i++){
+          hasil[items[i].idx].gabung=true;
+          hasil[items[i].idx].gabungDengan=items[0].kelas;
+          hasil[items[i].idx].guruRelifId=items[0].guruRelifId;
+          hasil[items[i].idx].guruRelifNama=items[0].guruRelifNama;
+        }
+      }
     });
+  }
+
+  appData.reliefJanaan=hasil;
+  renderReliefOutput();
 }
 
-function updateGSBadge() {
-    const b = document.getElementById('gs-status-badge');
-    if (appData.gsUrl) { b.className = 'badge badge-blue'; b.innerText = 'Cloud Connected'; }
+function renderReliefOutput(){
+  const h=appData.reliefJanaan;
+  if(!h.length){document.getElementById('relief-output').innerHTML='<div class="alert alert-warning">Tiada kelas yang perlu relief.</div>';return;}
+  let html=`<div class="card"><div class="card-title">Hasil Janaan</div><table><thead><tr><th>Guru Tak Hadir</th><th>Waktu</th><th>Kelas</th><th>Subjek</th><th>Guru Ganti</th><th>Catatan</th></tr></thead><tbody>`;
+  h.forEach(r=>{
+    html+=`<tr><td>${r.absentNama}</td><td>${r.slotLabel}</td><td>${r.kelas}</td><td>${r.subjek}</td><td><strong>${r.guruRelifNama}</strong></td><td>${r.gabung?`<span class="badge badge-amber">Gabung Dgn ${r.gabungDengan}</span>`:''}</td></tr>`;
+  });
+  html+=`</tbody></table><div style="margin-top:14px;display:flex;gap:8px"><button class="btn btn-success" onclick="simpanRekodJanaan()">💾 Simpan Rekod</button><button class="btn btn-outline" onclick="exportReliefPDF()">📥 PDF</button></div></div>`;
+  document.getElementById('relief-output').innerHTML=html;
 }
 
-function backStep1() {
-    document.getElementById('step2-panel').style.display='none';
-    document.getElementById('step1-panel').style.display='block';
-}
-function backStep2() {
-    document.getElementById('step3-panel').style.display='none';
-    document.getElementById('step2-panel').style.display='block';
+async function simpanRekodJanaan(){
+  const tarikh=document.getElementById('tarikh-input').value;
+  const hari=document.getElementById('hari-input').value;
+  const b=event.target;b.disabled=true;b.innerHTML='Menyimpan...';
+  const newRekods=appData.reliefJanaan.map(r=>({tarikh,hari,absentId:r.absentId,absentNama:r.absentNama,slot:r.slot,slotLabel:r.slotLabel,kelas:r.kelas,subjek:r.subjek,guruReliefId:r.guruRelifId,guruReliefNama:r.guruRelifNama,gabung:r.gabung?1:0,gabungDengan:r.gabungDengan||''}));
+  appData.rekod=[...newRekods,...appData.rekod];
+  saveLocal();
+  if(appData.gsUrl){try{await gsRequest('saveRekod',{rekod:newRekods});}catch(e){}}
+  alert('Rekod berjaya disimpan!');
+  showTab('rekod');
 }
 
-window.onload = init;
+function renderJadualTable(){
+  const q=document.getElementById('cari-guru').value.toLowerCase();
+  const filtered=appData.guru.filter(g=>g.nama.toLowerCase().includes(q));
+  const thead=document.getElementById('jadual-thead');
+  const tbody=document.getElementById('jadual-tbody');
+  thead.innerHTML=`<tr><th style="position:sticky;left:0;z-index:10;background:#1a56db">Nama Guru</th>${WAKTU_AJAR.map(s=>`<th>${appData.waktuLabels[s]||s}</th>`).join('')}</tr>`;
+  tbody.innerHTML=filtered.map(g=>{
+    const j=getJadualGuru(g.id,hariAktif);
+    return `<tr><td style="position:sticky;left:0;z-index:10;background:#fff;font-weight:600;border-right:2px solid #e2e8f0">${g.nama}</td>${WAKTU_AJAR.map(s=>`<td><input class="cell-input" value="${j[s]||''}" onchange="updateCell('${g.id}','${s}',this.value)"></td>`).join('')}</tr>`;
+  }).join('');
+}
+
+function updateCell(gid,sid,val){
+  if(!appData.jadual[hariAktif])appData.jadual[hariAktif]={};
+  if(!appData.jadual[hariAktif][gid])appData.jadual[hariAktif][gid]={};
+  appData.jadual[hariAktif][gid][sid]=val.trim();
+}
+
+function tukarHariJadual(h,el){
+  hariAktif=h;
+  document.querySelectorAll('.hari-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderJadualTable();
+}
+
+async function simpanJadualHariIni(){
+  if(!appData.gsUrl){alert('Sila set URL GS dahulu.');return;}
+  const btn=event.target;btn.disabled=true;btn.innerHTML='Menyimpan...';
+  const updates=[];
+  appData.guru.forEach(g=>{
+    const j=getJadualGuru(g.id,hariAktif);
+    updates.push({id:g.id,hari:hariAktif,...j});
+  });
+  try{await gsRequest('saveJadual',{updates});saveLocal();alert('Jadual '+hariAktif+' berjaya disimpan!');}catch(e){alert('Gagal: '+e.message);}
+  btn.disabled=false;btn.innerHTML='💾 Simpan Hari Ini';
+}
+
+async function simpanSemuaHari(){
+  if(!appData.gsUrl){alert('Sila set URL GS dahulu.');return;}
+  if(!confirm('Simpan jadual UNTUK SEMUA HARI ke GS? Ini mungkin ambil masa.'))return;
+  const btn=event.target;btn.disabled=true;btn.innerHTML='Menyimpan...';
+  let allUpdates=[];
+  HARI_LIST.forEach(h=>{
+    appData.guru.forEach(g=>{
+      const j=getJadualGuru(g.id,h);
+      allUpdates.push({id:g.id,hari:h,...j});
+    });
+  });
+  try{await gsRequest('saveJadual',{updates:allUpdates});saveLocal();alert('Semua jadual berjaya disimpan!');}catch(e){alert('Gagal: '+e.message);}
+  btn.disabled=false;btn.innerHTML='💾 Simpan Semua Hari';
+}
+
+async function muatJadualDariGS(){
+  if(!appData.gsUrl){alert('Sila set URL GS dahulu.');return;}
+  const btn=event.target;btn.disabled=true;btn.innerHTML='Memuat...';
+  try{
+    const res=await gsRequest('getJadual',{});
+    if(res.data){
+      res.data.forEach(r=>{
+        if(!appData.jadual[r.hari])appData.jadual[r.hari]={};
+        const {id,hari,...slots}=r;
+        appData.jadual[hari][id]=slots;
+      });
+      saveLocal();renderJadualTable();alert('Jadual berjaya dimuat dari GS!');
+    }
+  }catch(e){alert('Gagal: '+e.message);}
+  btn.disabled=false;btn.innerHTML='↻ Muat dari GS';
+}
+
+function renderRekod(){
+  const dari=document.getElementById('filter-dari').value;
+  const hingga=document.getElementById('filter-hingga').value;
+  const gid=document.getElementById('filter-guru').value;
+  let f=appData.rekod;
+  if(dari)f=f.filter(r=>r.tarikh>=dari);
+  if(hingga)f=f.filter(r=>r.tarikh<=hingga);
+  if(gid)f=f.filter(r=>r.absentId===gid);
+  
+  const stats=document.getElementById('rekod-stats');
+  const total=f.length;
+  const topGanti={};
+  f.forEach(r=>{if(r.guruReliefId)topGanti[r.guruReliefNama]=(topGanti[r.guruReliefNama]||0)+1;});
+  const topEntry=Object.entries(topGanti).sort((a,b)=>b[1]-a[1])[0]||['-',0];
+  stats.innerHTML=`<div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">Total Relief</div></div><div class="stat-card"><div class="stat-num">${topEntry[1]}</div><div class="stat-label">Top Ganti: ${topEntry[0]}</div></div>`;
+
+  const start=(appData.currentPage-1)*appData.rekodPerPage;
+  const data=f.slice(start,start+appData.rekodPerPage);
+  let html=`<table><thead><tr><th>Tarikh</th><th>Guru Tak Hadir</th><th>Waktu</th><th>Kelas</th><th>Guru Ganti</th></tr></thead><tbody>`;
+  data.forEach(r=>html+=`<tr><td>${r.tarikh}</td><td>${r.absentNama}</td><td>${r.slotLabel}</td><td>${r.kelas}</td><td>${r.guruReliefNama}</td></tr>`);
+  html+=`</tbody></table>`;
+  document.getElementById('rekod-table-wrap').innerHTML=html;
+  renderPagination(f.length);
+}
+
+function filterRekod(){appData.currentPage=1;renderRekod();}
+function resetFilterRekod(){document.getElementById('filter-dari').value='';document.getElementById('filter-hingga').value='';document.getElementById('filter-guru').value='';filterRekod();}
+function populateFilterGuru(){const sel=document.getElementById('filter-guru');sel.innerHTML='<option value="">Semua Guru</option>'+appData.guru.map(g=>`<option value="${g.id}">${g.nama}</option>`).join('');}
+function renderPagination(total){
+  const pages=Math.ceil(total/appData.rekodPerPage);
+  let h='';for(let i=1;i<=pages;i++)h+=`<button class="page-btn ${i===appData.currentPage?'active':''}" onclick="appData.currentPage=${i};renderRekod()">${i}</button>`;
+  document.getElementById('rekod-pagination').innerHTML=h;
+}
+
+function renderTetapan(){
+  document.getElementById('gs-url').value=appData.gsUrl;
+  document.getElementById('nama-sekolah').value=appData.namaSekolah;
+  if(appData.logoSekolah){
+    document.getElementById('logo-preview').innerHTML=`<img src="${appData.logoSekolah}" style="width:100%;height:100%;object-fit:contain">`;
+  }
+  const g=document.getElementById('waktu-config-grid');
+  g.innerHTML=SLOT_KEYS.map(s=>`<div><label>${s}</label><input class="input-sm" value="${appData.waktuLabels[s]||''}" onchange="appData.waktuLabels['${s}']=this.value;saveLocal()"></div>`).join('');
+}
+
+function simpanGSUrl(){appData.gsUrl=document.getElementById('gs-url').value.trim();saveLocal();}
+function simpanTetapanLokal(){appData.namaSekolah=document.getElementById('nama-sekolah').value;saveLocal();}
+
+async function testGSConnection(){
+  if(!appData.gsUrl){alert('Sila masukkan URL GS.');return;}
+  const resDiv=document.getElementById('gs-test-result');
+  resDiv.innerHTML='<span class="loading" style="border-color:#1a56db;border-top-color:transparent"></span> Menghubung...';
+  try{
+    const d=await gsRequest('test',{});
+    if(d.status==='ok'){
+      resDiv.innerHTML='<div class="alert alert-success">✅ Berjaya disambung!</div>';
+      document.getElementById('gs-status-badge').className='badge badge-green';
+      document.getElementById('gs-status-badge').textContent='Tersambung';
+    }
+  }catch(e){resDiv.innerHTML='<div class="alert alert-danger">❌ Gagal: '+e.message+'</div>';}
+}
+
+async function muatSemuaData(){
+  if(!appData.gsUrl){alert('Sila set URL GS dahulu.');return;}
+  try{
+    const d=await gsRequest('getAllData',{});
+    if(d.guru)appData.guru=d.guru;
+    if(d.labels)appData.waktuLabels=d.labels;
+    if(d.namaSekolah)appData.namaSekolah=d.namaSekolah;
+    if(d.logoSekolah)appData.logoSekolah=d.logoSekolah;
+    if(d.jadual){
+      d.jadual.forEach(r=>{
+        if(!appData.jadual[r.hari])appData.jadual[r.hari]={};
+        const {id,hari,...slots}=r;appData.jadual[hari][id]=slots;
+      });
+    }
+    saveLocal();populatePilihGuru();renderTetapan();renderRenameGuru();
+    alert('Semua data berjaya dimuat dari GS!');
+  }catch(e){alert('Gagal muat data: '+e.message);}
+}
+
+async function simpanTetapanKeGS(){
+  if(!appData.gsUrl)return;
+  try{await gsRequest('saveTetapan',{namaSekolah:appData.namaSekolah,logoSekolah:appData.logoSekolah});alert('Tetapan sekolah disimpan ke GS!');}catch(e){}
+}
+
+async function simpanWaktuKeGS(){
+  if(!appData.gsUrl)return;
+  try{await gsRequest('saveWaktuLabels',{labels:appData.waktuLabels});alert('Label waktu disimpan ke GS!');}catch(e){}
+}
+
+function uploadLogo(input){
+  if(input.files&&input.files[0]){
+    const reader=new FileReader();
+    reader.onload=function(e){
+      appData.logoSekolah=e.target.result;
+      saveLocal();renderTetapan();
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+function buangLogo(){appData.logoSekolah='';document.getElementById('logo-preview').innerHTML='<span id="logo-placeholder" style="font-size:10px;color:#94a3b8;text-align:center;padding:4px">Tiada<br>Logo</span>';saveLocal();}
+
+async function gsRequest(action,payload){
+  const url=appData.gsUrl;
+  if(!url)throw new Error('No GS URL');
+  const params=new URLSearchParams({action});
+  Object.entries(payload).forEach(([k,v])=>{
+    params.append(k,typeof v==='object'?encodeURIComponent(JSON.stringify(v)):encodeURIComponent(String(v)));
+  });
+  const res=await fetch(`${url}?${params.toString()}`,{method:'GET',redirect:'follow'});
+  if(!res.ok)throw new Error('HTTP '+res.status);
+  const text=await res.text();
+  try{return JSON.parse(text);}catch(e){throw new Error('Response bukan JSON');}
+}
+
+function exportReliefPDF(){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF();
+  const tarikh=document.getElementById('tarikh-input').value;
+  const hari=document.getElementById('hari-input').value;
+  
+  if(appData.logoSekolah) doc.addImage(appData.logoSekolah,'PNG',10,10,25,25);
+  doc.setFontSize(16);doc.text(appData.namaSekolah||'SISTEM JANA RELIEF',105,18,{align:'center'});
+  doc.setFontSize(12);doc.text('JADUAL GURU GANTI (RELIEF)',105,23,{align:'center'});
+  doc.setFontSize(10);doc.text(`Tarikh: ${formatTarikh(tarikh)} (${hari})`,105,28,{align:'center'});
+
+  const tableData=appData.reliefJanaan.map(r=>[r.absentNama,r.slotLabel,r.kelas,r.subjek,r.guruRelifNama,r.gabung?`Dgn ${r.gabungDengan}`:'']);
+  doc.autoTable({head:[['Guru Tak Hadir','Waktu','Kelas','Subjek','Guru Ganti','Catatan']],body:tableData,startY:35,theme:'striped',styles:{fontSize:8}});
+  doc.save(`Relief_${tarikh}.pdf`);
+}
+
+// Init
+loadLocal();
+initData();
+populatePilihGuru();
 </script>
+
 </body>
 </html>
