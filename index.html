@@ -7,7 +7,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <style>
-/* CSS kekal sama seperti asal anda untuk menjaga paparan */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:sans-serif;background:#f0f4f8;color:#1a202c;font-size:14px}
 .app-header{background:#1a56db;color:#fff;padding:14px 20px;display:flex;align-items:center;gap:12px}
@@ -16,40 +15,55 @@ body{font-family:sans-serif;background:#f0f4f8;color:#1a202c;font-size:14px}
 .nav-tabs{background:#fff;border-bottom:1px solid #e2e8f0;display:flex;padding:0 16px;overflow-x:auto}
 .nav-tab{padding:11px 16px;cursor:pointer;font-size:13px;font-weight:500;border-bottom:2px solid transparent;color:#64748b;white-space:nowrap}
 .nav-tab.active{border-bottom-color:#1a56db;color:#1a56db}
+.nav-tab:hover:not(.active){background:#f8fafc}
 .page{display:none;padding:16px}
 .page.active{display:block}
 .card{background:#fff;border-radius:10px;border:1px solid #e2e8f0;padding:18px;margin-bottom:14px}
 .card-title{font-size:14px;font-weight:700;color:#1a56db;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #e2e8f0}
 label{display:block;font-size:12px;color:#475569;margin-bottom:5px;font-weight:500}
-select,input[type=text],input[type=date]{width:100%;padding:8px 11px;border:1px solid #cbd5e1;border-radius:7px;font-size:13px;color:#1a202c}
-.btn{padding:8px 16px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:6px}
-.btn-primary{background:#1a56db;color:#fff}.btn-success{background:#16a34a;color:#fff}.btn-gray{background:#e2e8f0;color:#475569}
-.btn-outline{background:#fff;color:#1a56db;border:1px solid #1a56db}
+select,input[type=text],input[type=date]{width:100%;padding:8px 11px;border:1px solid #cbd5e1;border-radius:7px;font-size:13px;color:#1a202c;background:#fff}
+.btn{padding:8px 16px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:6px;transition:all .15s}
+.btn-primary{background:#1a56db;color:#fff}
+.btn-success{background:#16a34a;color:#fff}
+.btn-gray{background:#e2e8f0;color:#475569}
+.btn-danger{background:#ef4444;color:#fff}
+.form-row{display:grid;gap:12px;margin-bottom:12px}
+.form-row.col2{grid-template-columns:1fr 1fr}
 .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
-.badge-blue{background:#dbeafe;color:#1e40af}.badge-amber{background:#fef3c7;color:#92400e}
+.badge-blue{background:#dbeafe;color:#1e40af}
+.badge-gray{background:#f1f5f9;color:#475569}
 .alert{padding:11px 14px;border-radius:8px;font-size:13px;margin-bottom:12px;line-height:1.5}
 .alert-info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
 table{width:100%;border-collapse:collapse;font-size:12px}
-th{background:#f1f5f9;padding:8px;text-align:left;border-bottom:1px solid #e2e8f0}
-td{padding:7px 8px;border-bottom:1px solid #f1f5f9}
-.step-indicator{display:flex;align-items:center;margin-bottom:18px;gap:4px}
-.step{display:flex;align-items:center;gap:6px}.step-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;background:#e2e8f0}
-.step.active .step-num{background:#1a56db;color:#fff}.step-label{font-size:11px;color:#94a3b8}
-.step.active .step-label{color:#1a56db;font-weight:bold}
+th{background:#f1f5f9;padding:8px 9px;text-align:left;font-weight:600;color:#475569;border-bottom:1px solid #e2e8f0}
+td{padding:7px 9px;border-bottom:1px solid #f1f5f9;color:#334155}
+.step-indicator{display:flex;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:4px}
+.step{display:flex;align-items:center;gap:6px}
+.step-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.step.active .step-num{background:#1a56db;color:#fff}
+.step.pending .step-num{background:#e2e8f0;color:#94a3b8}
+.step-label{font-size:11px;font-weight:500}
+.step-line{flex:1;height:2px;background:#e2e8f0;min-width:12px}
 .guru-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:7px}
-.guru-check-item{display:flex;align-items:center;gap:8px;padding:7px;border:1px solid #e2e8f0;border-radius:7px;cursor:pointer}
+.guru-check-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid #e2e8f0;border-radius:7px;cursor:pointer}
 .guru-check-item.checked{background:#eff6ff;border-color:#1a56db}
-.jadual-wrap{overflow-x:auto}.jadual-table{min-width:1000px}.cell-input{width:100%;border:none;background:transparent;font-size:11px;text-align:center}
-.guru-absent-tag{display:inline-flex;background:#fee2e2;color:#991b1b;padding:4px 9px;border-radius:20px;font-size:12px;margin:3px}
-.loading{display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+.search-box{padding:8px 11px;border:1px solid #cbd5e1;border-radius:7px;font-size:13px;width:100%;margin-bottom:10px}
+.jadual-wrap{overflow-x:auto}
+.jadual-table{min-width:1000px;border-collapse:collapse}
+.jadual-table th{background:#1a56db;color:#fff;padding:8px 7px;font-size:11px}
+.cell-input{width:100%;border:none;background:transparent;font-size:11px;text-align:center}
+.guru-absent-tag{display:inline-flex;align-items:center;gap:5px;background:#fee2e2;color:#991b1b;padding:4px 9px;border-radius:20px;font-size:12px;margin:3px}
+.guru-absent-tag button{background:none;border:none;cursor:pointer;color:#991b1b;font-weight:bold}
 </style>
 </head>
 <body>
 
 <div class="app-header">
-  <div><h1>📚 Sistem Jana Relief</h1><p>Auto-assign cikgu ganti secara adil & pintar</p></div>
-  <div style="margin-left:auto"><span id="gs-status-badge" class="badge badge-gray">Tidak Disambung</span></div>
+  <div>
+    <h1>📚 Sistem Jana Relief</h1>
+    <p>Auto-assign cikgu ganti secara adil & pintar</p>
+  </div>
+  <div style="margin-left:auto"><span id="gs-status-badge" class="badge badge-gray">Status GS</span></div>
 </div>
 
 <div class="nav-tabs">
@@ -61,42 +75,45 @@ td{padding:7px 8px;border-bottom:1px solid #f1f5f9}
 
 <div class="page active" id="page-jana">
   <div class="step-indicator">
-    <div class="step active" id="step1-ind"><div class="step-num">1</div><div class="step-label">Input</div></div>
-    <div style="flex:1;height:2px;background:#e2e8f0"></div>
-    <div class="step" id="step2-ind"><div class="step-num">2</div><div class="step-label">Pengecualian</div></div>
-    <div style="flex:1;height:2px;background:#e2e8f0"></div>
-    <div class="step" id="step3-ind"><div class="step-num">3</div><div class="step-label">Hasil</div></div>
+    <div class="step active" id="step1-ind"><div class="step-num">1</div><div class="step-label">Pilih Guru & Tarikh</div></div>
+    <div class="step-line"></div>
+    <div class="step pending" id="step2-ind"><div class="step-num">2</div><div class="step-label">Pengecualian</div></div>
+    <div class="step-line"></div>
+    <div class="step pending" id="step3-ind"><div class="step-num">3</div><div class="step-label">Hasil Janaan</div></div>
   </div>
 
   <div id="step1-panel">
     <div class="card">
-      <div class="card-title">Maklumat Ketidakhadiran</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-        <div><label>Tarikh</label><input type="date" id="tarikh-input" onchange="autoSetHari()"></div>
-        <div><label>Hari</label><select id="hari-input"><option>Isnin</option><option>Selasa</option><option>Rabu</option><option>Khamis</option><option>Jumaat</option></select></div>
+      <div class="card-title">Langkah 1: Maklumat Asas</div>
+      <div class="form-row col2">
+        <div><label>Tarikh</label><input type="date" id="tarikh-input"></div>
+        <div><label>Hari</label>
+          <select id="hari-input">
+            <option>Isnin</option><option>Selasa</option><option>Rabu</option><option>Khamis</option><option>Jumaat</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:15px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;background:#fffbeb;padding:10px;border-radius:8px;border:1px solid #fde68a">
+          <input type="checkbox" id="mod-peperiksaan" style="width:18px;height:18px">
+          <span style="font-weight:bold;color:#92400e">Aktifkan Mod Peperiksaan (Kekalkan pengawas sama)</span>
+        </label>
       </div>
       <div>
         <label>Pilih Guru Tidak Hadir</label>
-        <select id="pilih-guru-absent" onchange="tambahGuruAbsent()"><option value="">-- Pilih Guru --</option></select>
-        <div id="guru-absent-list" style="margin-top:8px;min-height:30px"></div>
+        <select id="pilih-guru-absent" onchange="tambahGuruAbsent()"><option value="">-- Pilih Nama --</option></select>
+        <div id="guru-absent-list" style="margin-top:10px"></div>
       </div>
-      <div style="margin-top:14px; padding:10px; background:#fffbeb; border-radius:8px; border:1px solid #fde68a">
-        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; color:#92400e; font-weight:bold">
-          <input type="checkbox" id="mod-peperiksaan" style="width:18px; height:18px"> 
-          🔥 Aktifkan Mod Peperiksaan (Ketat)
-        </label>
-        <p style="font-size:11px; color:#b45309; margin-left:26px">Sistem akan mengelakkan pertukaran guru yang mengganggu pengawasan.</p>
-      </div>
-      <div style="margin-top:14px"><button class="btn btn-primary" onclick="keStep2()">Seterusnya →</button></div>
+      <div style="margin-top:20px"><button class="btn btn-primary" onclick="keStep2()">Seterusnya →</button></div>
     </div>
   </div>
 
   <div id="step2-panel" style="display:none">
     <div class="card">
-      <div class="card-title">Pengecualian Guru Hari Ini</div>
-      <input type="text" id="cari-pengecualian" placeholder="Cari nama guru..." oninput="filterPengecualian()" style="margin-bottom:10px">
+      <div class="card-title">Langkah 2: Pengecualian Guru (Hari Ini Sahaja)</div>
+      <input class="search-box" placeholder="Cari nama guru..." id="cari-pengecualian" oninput="renderPengecualian()">
       <div id="pengecualian-grid" class="guru-grid"></div>
-      <div style="margin-top:14px;display:flex;gap:8px">
+      <div style="margin-top:20px;display:flex;gap:10px">
         <button class="btn btn-success" onclick="keStep3()">⚡ Jana Relief Sekarang</button>
         <button class="btn btn-gray" onclick="backStep1()">← Kembali</button>
       </div>
@@ -104,313 +121,315 @@ td{padding:7px 8px;border-bottom:1px solid #f1f5f9}
   </div>
 
   <div id="step3-panel" style="display:none">
-    <div id="jana-info"></div>
     <div id="relief-output"></div>
-    <button class="btn btn-gray" onclick="backStep2()" style="margin-top:10px">← Kembali</button>
+    <div style="margin-top:15px">
+        <button class="btn btn-gray" onclick="backStep2()">← Kembali Edit</button>
+    </div>
   </div>
 </div>
 
 <div class="page" id="page-jadual">
     <div class="card">
-      <div class="card-title">Jadual Mengajar Guru</div>
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <input type="text" id="cari-guru" placeholder="Cari nama..." oninput="renderJadualTable()" style="flex:1">
-        <button class="btn btn-primary" onclick="simpanJadual()">💾 Simpan Jadual</button>
-      </div>
-      <div id="hari-tabs" style="display:flex;gap:5px;margin-bottom:10px"></div>
-      <div class="jadual-wrap"><table class="jadual-table"><thead id="jadual-thead"></thead><tbody id="jadual-tbody"></tbody></table></div>
+        <div class="card-title">Jadual Mengajar Mingguan</div>
+        <div style="display:flex;gap:10px;margin-bottom:15px">
+            <select id="pilih-hari-jadual" style="width:150px" onchange="renderJadualTable()">
+                <option>Isnin</option><option>Selasa</option><option>Rabu</option><option>Khamis</option><option>Jumaat</option>
+            </select>
+            <input type="text" id="cari-guru-jadual" class="search-box" style="margin:0" placeholder="Cari guru..." oninput="renderJadualTable()">
+            <button class="btn btn-primary" onclick="simpanSemuaJadual()">Simpan Jadual</button>
+        </div>
+        <div class="jadual-wrap">
+            <table class="jadual-table">
+                <thead id="jadual-head"></thead>
+                <tbody id="jadual-body"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-<div class="page" id="page-rekod"><div class="card"><div class="card-title">Rekod</div><div id="rekod-list"></div></div></div>
+<div class="page" id="page-rekod">
+    <div class="card">
+        <div class="card-title">Rekod Sejarah Relief</div>
+        <div id="rekod-list"></div>
+    </div>
+</div>
+
 <div class="page" id="page-tetapan">
     <div class="card">
-        <div class="card-title">Tetapan</div>
-        <input type="text" id="gs-url" placeholder="URL Apps Script" style="margin-bottom:10px" oninput="appData.gsUrl=this.value;saveLocal()">
-        <button class="btn btn-primary" onclick="muatSemuaData()">↻ Muat Data dari GS</button>
-        <hr style="margin:15px 0">
-        <div id="rename-section">
-            <label>Tambah Guru Baru</label>
-            <div style="display:flex;gap:5px"><input type="text" id="nama-guru-baru" placeholder="Nama Guru"><button class="btn btn-success" onclick="tambahGuruBaharu()">Tambah</button></div>
-            <div id="rename-guru-grid" class="guru-grid" style="margin-top:10px"></div>
+        <div class="card-title">Konfigurasi Sistem</div>
+        <label>URL Google Apps Script</label>
+        <input type="text" id="gs-url" placeholder="https://script.google.com/..." onchange="appData.gsUrl=this.value;saveLocal()">
+        <div style="margin-top:15px">
+            <button class="btn btn-primary" onclick="muatDataGS()">Muat Data dari Cloud</button>
         </div>
     </div>
 </div>
 
 <script>
-const SLOT_KEYS=['W1','W2','W3','W4','W5','W6','W7','W8','W9','W10','W11','W12','W13','W14'];
+const SLOT_KEYS=['W1','W2','W3','W4','W5','W6','W7','W8','W9','W10','W11','W12'];
 const HARI_LIST=['Isnin','Selasa','Rabu','Khamis','Jumaat'];
-let appData={
-  gsUrl:'', namaSekolah:'', logoSekolah:'', waktuLabels:{},
-  guru:[], jadual:{}, rekod:[], 
-  guruAbsentHariIni:[], pengecualianHariIni:[], reliefJanaan:[]
+
+let appData = {
+    gsUrl: '',
+    guru: [], 
+    jadual: {}, 
+    rekod: [],
+    guruAbsentHariIni: [],
+    pengecualianHariIni: []
 };
-let hariAktifJadual='Isnin';
 
 // INITIALIZATION
-function loadLocal(){
-  const d=JSON.parse(localStorage.getItem('reliefDataV4')||'{}');
-  Object.assign(appData, d);
-}
-function saveLocal(){ localStorage.setItem('reliefDataV4', JSON.stringify(appData)); }
-
-function init(){
-  loadLocal();
-  renderHariTabs();
-  renderTetapan();
-  populatePilihGuru();
-}
-
-function showTab(t){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+t).classList.add('active');
-  document.getElementById('tab-'+t).classList.add('active');
-  if(t==='jadual')renderJadualTable();
-  if(t==='rekod')renderRekod();
-  if(t==='tetapan')renderRenameGuru();
-}
-
-// LOGIK JANA RELIEF (OTAK SISTEM)
-function janaRelief(){
-  const tarikh = document.getElementById('tarikh-input').value;
-  const hari = document.getElementById('hari-input').value;
-  const isModExam = document.getElementById('mod-peperiksaan').checked;
-  const absentIds = appData.guruAbsentHariIni.map(g=>g.id);
-  const exclIds = appData.pengecualianHariIni;
-
-  // 1. Kenal pasti guru yang hadir & tidak dikecualikan
-  let guruAvail = appData.guru.filter(g => !absentIds.includes(g.id) && !exclIds.includes(g.id));
-  
-  // 2. Kira statistik hari ini untuk setiap guru avail
-  let guruStats = {};
-  guruAvail.forEach(g => {
-    const j = (appData.jadual[hari] && appData.jadual[hari][g.id]) || {};
-    const waktuMengajar = SLOT_KEYS.filter(s => j[s] && j[s].trim() !== "").length;
-    guruStats[g.id] = {
-      id: g.id,
-      nama: g.nama,
-      waktuMengajar: waktuMengajar,
-      reliefDapat: 0,
-      isPremium: waktuMengajar <= 5, // SYARAT UTAMA 1
-      jadual: j
-    };
-  });
-
-  let hasil = [];
-
-  // Pusingan 1 & 2 (Untuk membolehkan relief ke-2 jika terpaksa)
-  for (let pusingan = 1; pusingan <= 2; pusingan++) {
-    appData.guruAbsentHariIni.forEach(absentGuru => {
-      const jadualAbsent = (appData.jadual[hari] && appData.jadual[hari][absentGuru.id]) || {};
-      
-      SLOT_KEYS.forEach(slot => {
-        // Jika hasil sudah ada rekod untuk guru ini di slot ini, skip
-        if (hasil.find(h => h.absentId === absentGuru.id && h.slot === slot)) return;
-
-        const kelasInfo = jadualAbsent[slot];
-        if (!kelasInfo || kelasInfo.trim() === "") return;
-
-        // Cari calon
-        let calon = Object.values(guruStats).filter(gs => {
-          // Syarat Wajib: Slot mesti kosong
-          if (gs.jadual[slot] && gs.jadual[slot].trim() !== "") return false;
-
-          // Had Relief: Pusingan 1 max 1, Pusingan 2 max 2
-          if (gs.reliefDapat >= pusingan) return false;
-
-          // Syarat Buffer (Waktu Tidak Bersebelahan) - SYARAT UTAMA 2
-          const idx = SLOT_KEYS.indexOf(slot);
-          const sPrev = SLOT_KEYS[idx-1], sNext = SLOT_KEYS[idx+1];
-          const adaKelasBersebelahan = (sPrev && gs.jadual[sPrev] && gs.jadual[sPrev].trim() !== "") || 
-                                       (sNext && gs.jadual[sNext] && gs.jadual[sNext].trim() !== "");
-          
-          if (adaKelasBersebelahan) {
-             // Jika pusingan 1, kita ketat. Pusingan 2, kita longgar sikit kalau takde orang.
-             if (pusingan === 1) return false;
-          }
-
-          // Syarat Mod Peperiksaan - SYARAT UTAMA 3
-          if (isModExam) {
-            // Logik: Elakkan ambil guru yang baru lepas mengajar atau nak mengajar kelas lain
-            // (Kita guna syarat buffer yang lebih ketat di sini)
-            if (adaKelasBersebelahan) return false;
-          }
-
-          return true;
+function init() {
+    loadLocal();
+    if (appData.guru.length === 0) {
+        // Dummy data jika kosong
+        for(let i=1; i<=70; i++) appData.guru.push({id: 'G'+i, nama: 'GURU '+i});
+    }
+    HARI_LIST.forEach(h => {
+        if (!appData.jadual[h]) appData.jadual[h] = {};
+        appData.guru.forEach(g => {
+            if (!appData.jadual[h][g.id]) {
+                appData.jadual[h][g.id] = Object.fromEntries(SLOT_KEYS.map(s => [s, '']));
+            }
         });
-
-        // Susun calon mengikut keutamaan
-        calon.sort((a, b) => {
-          if (a.isPremium !== b.isPremium) return a.isPremium ? -1 : 1; // Dahulukan <= 5 waktu
-          return a.reliefDapat - b.reliefDapat; // Dahulukan yang belum dapat relief
-        });
-
-        const terpilih = calon[0];
-        if (terpilih) {
-          guruStats[terpilih.id].reliefDapat++;
-          hasil.push({
-            absentId: absentGuru.id, absentNama: absentGuru.nama,
-            slot: slot, slotLabel: appData.waktuLabels[slot] || slot,
-            kelas: kelasInfo, guruRelifId: terpilih.id, guruRelifNama: terpilih.nama,
-            catatan: (pusingan > 1 ? "Relief Ke-2" : "") + (isModExam ? " [Exam Mode]" : "")
-          });
-        }
-      });
     });
-  }
-
-  appData.reliefJanaan = hasil;
-  renderReliefOutput();
+    populateGuruSelect();
+    updateGSBadge();
 }
 
-// RENDERING & UI FUNCTIONS
-function renderReliefOutput(){
-  let html = `<div class="card"><div class="card-title">Hasil Janaan</div><table><tr><th>Guru Tak Hadir</th><th>Waktu</th><th>Kelas</th><th>Guru Ganti</th><th>Nota</th></tr>`;
-  appData.reliefJanaan.forEach(r => {
-    html += `<tr><td>${r.absentNama}</td><td>${r.slotLabel}</td><td>${r.kelas}</td><td><strong>${r.guruRelifNama}</strong></td><td><small>${r.catatan}</small></td></tr>`;
-  });
-  html += `</table><div style="margin-top:10px"><button class="btn btn-success" onclick="simpanRekodJanaan()">💾 Simpan & Rekod</button> <button class="btn btn-outline" onclick="exportReliefPDF()">📥 PDF</button></div></div>`;
-  document.getElementById('relief-output').innerHTML = html;
+function saveLocal() { localStorage.setItem('relief_data', JSON.stringify(appData)); }
+function loadLocal() {
+    const d = localStorage.getItem('relief_data');
+    if (d) appData = JSON.parse(d);
 }
 
-async function simpanRekodJanaan(){
-  if(!appData.gsUrl){alert("Set URL GS di Tetapan!"); return;}
-  const btn = event.target; btn.disabled=true; btn.innerHTML="Menyimpan...";
-  try {
-    const res = await gsRequest('saveRekod', { rekod: appData.reliefJanaan });
-    alert("Berjaya disimpan ke Google Sheet!");
-    showTab('rekod');
-  } catch(e) { alert("Gagal simpan: " + e); }
-  btn.disabled=false; btn.innerHTML="💾 Simpan & Rekod";
+function showTab(t) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-'+t).classList.add('active');
+    document.getElementById('tab-'+t).classList.add('active');
+    if (t === 'jadual') renderJadualTable();
+    if (t === 'rekod') renderRekod();
 }
 
-// Tambahan fungsi Helper
-function autoSetHari(){
-  const d = new Date(document.getElementById('tarikh-input').value);
-  const days = ['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
-  document.getElementById('hari-input').value = days[d.getDay()] || 'Isnin';
+// LOGIK JANA RELIEF (SYARAT KHAS)
+function janaRelief() {
+    const hari = document.getElementById('hari-input').value;
+    const modPeperiksaan = document.getElementById('mod-peperiksaan').checked;
+    const j = appData.jadual[hari];
+    
+    // 1. Dapatkan senarai guru yang layak (Bukan yang absent & bukan yang dikecualikan)
+    const absentIds = appData.guruAbsentHariIni.map(g => g.id);
+    let calonLayak = appData.guru.filter(g => !absentIds.includes(g.id) && !appData.pengecualianHariIni.includes(g.id));
+
+    // 2. Kira 'beban mengajar' guru pada hari tersebut untuk Syarat < 5 Waktu
+    calonLayak = calonLayak.map(g => {
+        let count = 0;
+        SLOT_KEYS.forEach(s => { if(j[g.id][s]) count++; });
+        return { ...g, beban: count, reliefCount: 0 };
+    });
+
+    let hasil = [];
+
+    // Proses mengikut slot waktu
+    SLOT_KEYS.forEach((slot, idx) => {
+        appData.guruAbsentHariIni.forEach(absentGuru => {
+            const infoKelas = j[absentGuru.id][slot];
+            if (!infoKelas || infoKelas.trim() === "") return;
+
+            // Cari guru ganti
+            let ganti = cariGuruGantiPintar(calonLayak, slot, idx, j, modPeperiksaan);
+
+            if (ganti) {
+                ganti.reliefCount++;
+                hasil.push({
+                    slot: slot,
+                    absentNama: absentGuru.nama,
+                    kelas: infoKelas,
+                    gantiNama: ganti.nama,
+                    gantiId: ganti.id
+                });
+            } else {
+                hasil.push({
+                    slot: slot,
+                    absentNama: absentGuru.nama,
+                    kelas: infoKelas,
+                    gantiNama: "TIADA CALON",
+                    gantiId: null
+                });
+            }
+        });
+    });
+
+    return hasil;
 }
 
-function tambahGuruAbsent(){
-  const sel = document.getElementById('pilih-guru-absent');
-  const g = appData.guru.find(x => x.id === sel.value);
-  if(g && !appData.guruAbsentHariIni.find(x=>x.id===g.id)){
-    appData.guruAbsentHariIni.push(g);
-    renderGuruAbsentTags();
-  }
-  sel.value = "";
+function cariGuruGantiPintar(calon, slot, slotIdx, jadual, modPeperiksaan) {
+    // Tapis guru yang MEMANG ada kelas pada waktu itu
+    let freeNow = calon.filter(g => !jadual[g.id][slot]);
+
+    if (freeNow.length === 0) return null;
+
+    // KIRA SKOR / KEUTAMAAN
+    // Kriteria: 
+    // - Beban < 5 (Keutamaan Tinggi)
+    // - Buffer Bersebelahan (Check idx-1 dan idx+1)
+    // - Pernah kena relief (Had 1 atau 2)
+
+    let sorted = freeNow.sort((a, b) => {
+        // Syarat Had Relief: Utamakan yang belum kena (0) berbanding yang dah kena (1)
+        if (a.reliefCount !== b.reliefCount) return a.reliefCount - b.reliefCount;
+
+        // Syarat < 5 Waktu: Utamakan beban rendah
+        if (a.beban <= 5 && b.beban > 5) return -1;
+        if (a.beban > 5 && b.beban <= 5) return 1;
+
+        // Syarat Buffer: Adakah slot sebelah ada kelas?
+        const aHasBuffer = checkBuffer(a.id, slotIdx, jadual);
+        const bHasBuffer = checkBuffer(b.id, slotIdx, jadual);
+        if (aHasBuffer && !bHasBuffer) return -1;
+        if (!aHasBuffer && bHasBuffer) return 1;
+
+        return a.beban - b.beban; // Akhir sekali, ikut jumlah beban terendah
+    });
+
+    // Had maksima 2 relief (Syarat 3)
+    const calonFinal = sorted.find(g => g.reliefCount < 2);
+    return calonFinal || null;
 }
 
-function renderGuruAbsentTags(){
-  document.getElementById('guru-absent-list').innerHTML = appData.guruAbsentHariIni.map(g => 
-    `<span class="guru-absent-tag">${g.nama} <span style="cursor:pointer" onclick="buangAbsent('${g.id}')">×</span></span>`
-  ).join('');
+function checkBuffer(guruId, slotIdx, jadual) {
+    const prevSlot = SLOT_KEYS[slotIdx - 1];
+    const nextSlot = SLOT_KEYS[slotIdx + 1];
+    const hasPrev = prevSlot ? jadual[guruId][prevSlot] : false;
+    const hasNext = nextSlot ? jadual[guruId][nextSlot] : false;
+    // Pulangkan true jika "Selesa" (Tiada kelas sebelum & selepas)
+    return !hasPrev && !hasNext;
 }
 
-function buangAbsent(id){
-  appData.guruAbsentHariIni = appData.guruAbsentHariIni.filter(x=>x.id!==id);
-  renderGuruAbsentTags();
+// STEP NAVIGATION & RENDERING
+function tambahGuruAbsent() {
+    const sel = document.getElementById('pilih-guru-absent');
+    const id = sel.value;
+    if (!id) return;
+    const g = appData.guru.find(x => x.id === id);
+    if (!appData.guruAbsentHariIni.find(x => x.id === id)) {
+        appData.guruAbsentHariIni.push(g);
+        renderAbsentList();
+    }
 }
 
-function keStep2(){
-  if(appData.guruAbsentHariIni.length===0){alert("Pilih guru!"); return;}
-  document.getElementById('step1-panel').style.display='none';
-  document.getElementById('step2-panel').style.display='block';
-  document.getElementById('step2-ind').classList.add('active');
-  renderPengecualianGrid();
+function renderAbsentList() {
+    const div = document.getElementById('guru-absent-list');
+    div.innerHTML = appData.guruAbsentHariIni.map(g => `
+        <span class="guru-absent-tag">${g.nama} <button onclick="buangAbsent('${g.id}')">×</button></span>
+    `).join('');
 }
 
-function backStep1(){
-    document.getElementById('step1-panel').style.display='block';
+function buangAbsent(id) {
+    appData.guruAbsentHariIni = appData.guruAbsentHariIni.filter(x => x.id !== id);
+    renderAbsentList();
+}
+
+function keStep2() {
+    if (appData.guruAbsentHariIni.length === 0) return alert("Pilih guru tidak hadir.");
+    document.getElementById('step1-panel').style.display = 'none';
+    document.getElementById('step2-panel').style.display = 'block';
+    document.getElementById('step2-ind').classList.add('active');
+    renderPengecualian();
+}
+
+function renderPengecualian() {
+    const q = document.getElementById('cari-pengecualian').value.toLowerCase();
+    const grid = document.getElementById('pengecualian-grid');
+    const absentIds = appData.guruAbsentHariIni.map(g => g.id);
+    
+    grid.innerHTML = appData.guru.filter(g => !absentIds.includes(g.id) && g.nama.toLowerCase().includes(q)).map(g => `
+        <div class="guru-check-item ${appData.pengecualianHariIni.includes(g.id)?'checked':''}" onclick="togglePengecualian('${g.id}', this)">
+            <input type="checkbox" ${appData.pengecualianHariIni.includes(g.id)?'checked':''}> ${g.nama}
+        </div>
+    `).join('');
+}
+
+function togglePengecualian(id, el) {
+    if (appData.pengecualianHariIni.includes(id)) {
+        appData.pengecualianHariIni = appData.pengecualianHariIni.filter(x => x.id !== id);
+    } else {
+        appData.pengecualianHariIni.push(id);
+    }
+    renderPengecualian();
+}
+
+function keStep3() {
+    const janaan = janaRelief();
+    document.getElementById('step2-panel').style.display = 'none';
+    document.getElementById('step3-panel').style.display = 'block';
+    document.getElementById('step3-ind').classList.add('active');
+    
+    let html = `<div class="card"><div class="card-title">Senarai Relief Janaan</div><table>
+        <tr><th>Waktu</th><th>Guru Tak Hadir</th><th>Kelas</th><th>Guru Ganti</th></tr>`;
+    
+    janaan.forEach(r => {
+        html += `<tr><td>${r.slot}</td><td>${r.absentNama}</td><td>${r.kelas}</td><td><b>${r.gantiNama}</b></td></tr>`;
+    });
+    html += `</table><button class="btn btn-success" style="margin-top:15px" onclick="simpanRekodRelief(${JSON.stringify(janaan).replace(/"/g, '&quot;')})">Sahkan & Simpan</button></div>`;
+    
+    document.getElementById('relief-output').innerHTML = html;
+}
+
+function simpanRekodRelief(data) {
+    const t = document.getElementById('tarikh-input').value;
+    appData.rekod.push({ tarikh: t, data: data });
+    saveLocal();
+    alert("Rekod disimpan!");
+    location.reload();
+}
+
+function renderJadualTable() {
+    const hari = document.getElementById('pilih-hari-jadual').value;
+    const q = document.getElementById('cari-guru-jadual').value.toLowerCase();
+    const head = document.getElementById('jadual-head');
+    const body = document.getElementById('jadual-body');
+
+    head.innerHTML = `<tr><th>Nama Guru</th>${SLOT_KEYS.map(s => `<th>${s}</th>`).join('')}</tr>`;
+    
+    body.innerHTML = appData.guru.filter(g => g.nama.toLowerCase().includes(q)).map(g => `
+        <tr>
+            <td>${g.nama}</td>
+            ${SLOT_KEYS.map(s => `<td><input class="cell-input" value="${appData.jadual[hari][g.id][s]}" onchange="updateJadual('${hari}','${g.id}','${s}',this.value)"></td>`).join('')}
+        </tr>
+    `).join('');
+}
+
+function updateJadual(h, gid, s, val) {
+    appData.jadual[h][gid][s] = val;
+    saveLocal();
+}
+
+function populateGuruSelect() {
+    const sel = document.getElementById('pilih-guru-absent');
+    appData.guru.forEach(g => {
+        const opt = document.createElement('option');
+        opt.value = g.id; opt.text = g.nama;
+        sel.add(opt);
+    });
+}
+
+function updateGSBadge() {
+    const b = document.getElementById('gs-status-badge');
+    if (appData.gsUrl) { b.className = 'badge badge-blue'; b.innerText = 'Cloud Connected'; }
+}
+
+function backStep1() {
     document.getElementById('step2-panel').style.display='none';
-    document.getElementById('step2-ind').classList.remove('active');
+    document.getElementById('step1-panel').style.display='block';
+}
+function backStep2() {
+    document.getElementById('step3-panel').style.display='none';
+    document.getElementById('step2-panel').style.display='block';
 }
 
-function keStep3(){
-  document.getElementById('step2-panel').style.display='none';
-  document.getElementById('step3-panel').style.display='block';
-  document.getElementById('step3-ind').classList.add('active');
-  janaRelief();
-}
-
-function renderPengecualianGrid(){
-  const grid = document.getElementById('pengecualian-grid');
-  const absentIds = appData.guruAbsentHariIni.map(g=>g.id);
-  const avail = appData.guru.filter(g => !absentIds.includes(g.id));
-  grid.innerHTML = avail.map(g => `
-    <div class="guru-check-item ${appData.pengecualianHariIni.includes(g.id)?'checked':''}" onclick="toggleExc('${g.id}')">
-      <input type="checkbox" ${appData.pengecualianHariIni.includes(g.id)?'checked':''}> ${g.nama}
-    </div>
-  `).join('');
-}
-
-function toggleExc(id){
-  if(appData.pengecualianHariIni.includes(id)) appData.pengecualianHariIni = appData.pengecualianHariIni.filter(x=>x!==id);
-  else appData.pengecualianHariIni.push(id);
-  renderPengecualianGrid();
-}
-
-// Jadual & Sync Functions (Sama seperti asal tetapi lebih kemas)
-function renderJadualTable(){
-  const thead = document.getElementById('jadual-thead');
-  const tbody = document.getElementById('jadual-tbody');
-  thead.innerHTML = `<tr><th>Guru</th>${SLOT_KEYS.map(s => `<th>${appData.waktuLabels[s]||s}</th>`).join('')}</tr>`;
-  
-  const q = document.getElementById('cari-guru').value.toLowerCase();
-  const filtered = appData.guru.filter(g => g.nama.toLowerCase().includes(q));
-
-  tbody.innerHTML = filtered.map(g => {
-    const j = (appData.jadual[hariAktifJadual] && appData.jadual[hariAktifJadual][g.id]) || {};
-    return `<tr><td>${g.nama}</td>${SLOT_KEYS.map(s => `<td><input class="cell-input" value="${j[s]||''}" onchange="updateCell('${g.id}','${s}',this.value)"></td>`).join('')}</tr>`;
-  }).join('');
-}
-
-function updateCell(gid, slot, val){
-  if(!appData.jadual[hariAktifJadual]) appData.jadual[hariAktifJadual] = {};
-  if(!appData.jadual[hariAktifJadual][gid]) appData.jadual[hariAktifJadual][gid] = {};
-  appData.jadual[hariAktifJadual][gid][slot] = val;
-  saveLocal();
-}
-
-async function simpanJadual(){
-  if(!appData.gsUrl) return;
-  const btn = event.target; btn.innerHTML="Menyimpan...";
-  const updates = appData.guru.map(g => ({ id: g.id, hari: hariAktifJadual, ...appData.jadual[hariAktifJadual][g.id] }));
-  await gsRequest('saveJadual', { updates });
-  btn.innerHTML="💾 Simpan Jadual";
-}
-
-async function muatSemuaData(){
-  if(!appData.gsUrl) return;
-  const btn = event.target; btn.innerHTML="Memuat...";
-  const d = await gsRequest('getAllData', {});
-  Object.assign(appData, d);
-  saveLocal();
-  init();
-  btn.innerHTML="↻ Muat Data dari GS";
-  alert("Data dikemaskini!");
-}
-
-async function gsRequest(action, payload){
-  const params = new URLSearchParams({ action, ...payload });
-  const res = await fetch(`${appData.gsUrl}?${params.toString()}`);
-  return res.json();
-}
-
-function renderHariTabs(){
-  document.getElementById('hari-tabs').innerHTML = HARI_LIST.map(h => 
-    `<button class="btn ${hariAktifJadual===h?'btn-primary':'btn-gray'}" onclick="hariAktifJadual='${h}';renderHariTabs();renderJadualTable()">${h}</button>`
-  ).join('');
-}
-
-function populatePilihGuru(){
-  const sel = document.getElementById('pilih-guru-absent');
-  sel.innerHTML = '<option value="">-- Pilih Guru --</option>' + appData.guru.map(g => `<option value="${g.id}">${g.nama}</option>`).join('');
-}
-
-// INIT
-init();
+window.onload = init;
 </script>
 </body>
 </html>
