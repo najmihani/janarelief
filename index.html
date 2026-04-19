@@ -898,19 +898,41 @@ function janaRelief(){
     });
   });
 
-  // Gabung kelas jika guru tidak hadir >= 6
+  // ── GABUNG KELAS (syarat baru) ──
+  // Syarat 1: 1 guru jaga maksimum 2 kelas yang digabung sahaja
+  // Syarat 2: Hanya 4 kelas (2 pasangan) boleh digabung pada satu-satu masa
+  // Contoh: Guru A → Kelas 1Arif + 1Din | Guru B → Kelas 2Cem + 2Bestari
   if(bilAbsent>=6){
     const bySlot={};
-    hasil.forEach((r,i)=>{if(!bySlot[r.slot])bySlot[r.slot]=[];bySlot[r.slot].push({...r,idx:i});});
+    hasil.forEach((r,i)=>{
+      if(!bySlot[r.slot]) bySlot[r.slot]=[];
+      bySlot[r.slot].push({...r,idx:i});
+    });
+
     Object.values(bySlot).forEach(items=>{
+      if(items.length<2) return;
+
+      // Susun: item[0] kekal dengan guru asal, item[1] digabung dengan item[0]
+      // item[2] kekal dengan guru asal, item[3] digabung dengan item[2]
+      // item[4] ke atas: tidak digabung (kehadkan 4 kelas sahaja)
+
+      // Pasangan 1: items[0] dan items[1]
       if(items.length>=2){
-        for(let i=1;i<items.length;i++){
-          hasil[items[i].idx].gabung=true;
-          hasil[items[i].idx].gabungDengan=items[0].kelas;
-          hasil[items[i].idx].guruRelifId=items[0].guruRelifId;
-          hasil[items[i].idx].guruRelifNama=items[0].guruRelifNama;
-        }
+        hasil[items[1].idx].gabung=true;
+        hasil[items[1].idx].gabungDengan=items[0].kelas;
+        hasil[items[1].idx].guruRelifId=items[0].guruRelifId;
+        hasil[items[1].idx].guruRelifNama=items[0].guruRelifNama;
       }
+
+      // Pasangan 2: items[2] dan items[3] (jika ada, had 4 kelas)
+      if(items.length>=4){
+        hasil[items[3].idx].gabung=true;
+        hasil[items[3].idx].gabungDengan=items[2].kelas;
+        hasil[items[3].idx].guruRelifId=items[2].guruRelifId;
+        hasil[items[3].idx].guruRelifNama=items[2].guruRelifNama;
+      }
+
+      // items[4] ke atas: biarkan tanpa gabung (had tempat)
     });
   }
 
