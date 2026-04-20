@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistem Jana Relief (v1.7)</title>
+<title>Sistem Jana Relief (v1.8)</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <style>
@@ -71,8 +71,6 @@ tr:hover td{background:#f8fafc}
 .stat-card{background:#fff;border-radius:8px;padding:14px;border:1px solid #e2e8f0;text-align:center}
 .stat-num{font-size:22px;font-weight:700;color:#1a56db}
 .stat-label{font-size:11px;color:#64748b;margin-top:4px}
-.gs-config{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px;margin-bottom:14px}
-.gs-url-input{width:100%;padding:8px 11px;border:1px solid #bfdbfe;border-radius:7px;font-size:13px;font-family:monospace}
 .loading{display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
 .hari-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
@@ -105,17 +103,18 @@ tr:hover td{background:#f8fafc}
 .waktu-btn{padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:11px;cursor:pointer;text-align:center;background:#f8fafc;transition:all .15s}
 .waktu-btn.selected{background:#1a56db;color:#fff;border-color:#1a56db}
 .waktu-btn.rehat{background:#fef9c3;color:#854d0e;cursor:default;border-color:#fde68a}
+.jenis-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:#dbeafe;color:#1e40af;margin-left:4px;vertical-align:middle}
 </style>
 </head>
 <body>
 
 <div class="app-header">
   <div>
-    <h1>📚 Sistem Jana Relief</h1>
+    <h1>📚 Sistem Jana Relief (v1.8)</h1>
     <p>Auto-assign cikgu ganti secara adil</p>
   </div>
   <div style="margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-    <span id="gs-status-badge" class="badge badge-gray">Tidak Disambung</span>
+    <span id="gs-status-badge" class="badge badge-gray">Menyambung...</span>
     <button class="btn" style="background:rgba(255,255,255,.15);color:#fff;font-size:12px;padding:6px 12px" onclick="showTab('tetapan')">⚙ Tetapan</button>
   </div>
 </div>
@@ -131,22 +130,31 @@ tr:hover td{background:#f8fafc}
 <div id="modal-jenis" class="modal-overlay" style="display:none">
   <div class="modal-box">
     <div class="modal-title" id="modal-jenis-title">Jenis Ketidakhadiran</div>
-    <p style="font-size:13px;color:#475569;margin-bottom:14px">Pilih jenis ketidakhadiran untuk guru ini:</p>
-    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
-      <button class="btn btn-primary" style="justify-content:flex-start;gap:10px" onclick="pilihJenisAbsent('sehari')">
-        <span style="font-size:16px">📅</span>
-        <div style="text-align:left">
-          <div style="font-weight:600">Tidak hadir 1 hari penuh</div>
-          <div style="font-size:11px;opacity:.85">Semua waktu mengajar guru ini akan dijana relief</div>
-        </div>
-      </button>
-      <button class="btn btn-outline" style="justify-content:flex-start;gap:10px;padding:10px 16px" onclick="pilihJenisAbsent('waktu')">
-        <span style="font-size:16px">⏱</span>
-        <div style="text-align:left">
-          <div style="font-weight:600;color:#1a56db">Tidak hadir waktu tertentu sahaja</div>
-          <div style="font-size:11px;color:#64748b">Pilih waktu-waktu yang perlu relief sahaja</div>
-        </div>
-      </button>
+    <p style="font-size:13px;color:#475569;margin-bottom:10px">Pilih jenis ketidakhadiran untuk guru ini:</p>
+    <div style="margin-bottom:12px">
+      <label>Jenis Ketidakhadiran</label>
+      <select id="select-jenis-ketidakhadiran" style="margin-bottom:0">
+        <option value="">-- Pilih Jenis --</option>
+      </select>
+    </div>
+    <div style="border-top:1px solid #e2e8f0;padding-top:12px;margin-bottom:12px">
+      <p style="font-size:12px;color:#475569;margin-bottom:10px">Pilih tempoh ketidakhadiran:</p>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button class="btn btn-primary" style="justify-content:flex-start;gap:10px" onclick="pilihJenisAbsent('sehari')">
+          <span style="font-size:16px">📅</span>
+          <div style="text-align:left">
+            <div style="font-weight:600">Tidak hadir 1 hari penuh</div>
+            <div style="font-size:11px;opacity:.85">Semua waktu mengajar guru ini akan dijana relief</div>
+          </div>
+        </button>
+        <button class="btn btn-outline" style="justify-content:flex-start;gap:10px;padding:10px 16px" onclick="pilihJenisAbsent('waktu')">
+          <span style="font-size:16px">⏱</span>
+          <div style="text-align:left">
+            <div style="font-weight:600;color:#1a56db">Tidak hadir waktu tertentu sahaja</div>
+            <div style="font-size:11px;color:#64748b">Pilih waktu-waktu yang perlu relief sahaja</div>
+          </div>
+        </button>
+      </div>
     </div>
     <button class="btn btn-gray" style="width:100%" onclick="tutupModalJenis()">Batal</button>
   </div>
@@ -274,16 +282,17 @@ tr:hover td{background:#f8fafc}
 
 <div class="page" id="page-tetapan">
   <div class="card">
-    <div class="card-title">Sambungan Google Sheet</div>
-    <div class="gs-config">
-      <label>URL Google Apps Script (Web App)</label>
-      <input class="gs-url-input" id="gs-url" placeholder="https://script.google.com/macros/s/.../exec" oninput="simpanGSUrl()">
-      <p style="font-size:12px;color:#3b82f6;margin-top:5px">Paste URL dari Deploy → New Deployment</p>
+    <div class="card-title">Status Sambungan Google Sheet</div>
+    <div id="gs-info-panel" style="padding:12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span id="gs-status-icon" style="font-size:18px">⏳</span>
+        <div>
+          <div style="font-weight:600;font-size:13px" id="gs-status-text">Menyemak sambungan...</div>
+          <div style="font-size:11px;color:#64748b;margin-top:2px">Sambungan ke Google Sheet diurus secara automatik</div>
+        </div>
+      </div>
     </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="testGSConnection()">🔌 Test Sambungan</button>
-      <button class="btn btn-outline" onclick="muatSemuaData()">↻ Muat Semua Data dari GS</button>
-    </div>
+    <button class="btn btn-outline" onclick="semakSambungan()">↻ Semak Semula Sambungan</button>
     <div id="gs-test-result" style="margin-top:10px"></div>
   </div>
 
@@ -321,13 +330,24 @@ tr:hover td{background:#f8fafc}
   </div>
 
   <div class="card">
+    <div class="card-title">Jenis Ketidakhadiran</div>
+    <p style="font-size:12px;color:#64748b;margin-bottom:12px">Urus senarai jenis ketidakhadiran. Pilihan ini akan muncul semasa memilih guru yang tidak hadir.</p>
+    <div id="jenis-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px"></div>
+    <div style="display:flex;gap:8px;align-items:center;background:#f8fafc;padding:10px;border-radius:8px;border:1px solid #e2e8f0">
+      <input type="text" id="jenis-baru-input" class="input-sm" placeholder="Contoh: MESYUARAT, CB, CRK..." style="flex:1">
+      <button class="btn btn-success" onclick="tambahJenisKetidakhadiran()">+ Tambah</button>
+    </div>
+    <div style="margin-top:12px">
+      <button class="btn btn-primary" onclick="simpanJenisKeGS()">💾 Simpan Jenis ke GS</button>
+    </div>
+  </div>
+
+  <div class="card">
     <div class="card-title">Pengurusan Nama Guru</div>
-    
     <div style="display:flex; gap:8px; margin-bottom:15px; background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0; align-items:center">
       <input type="text" id="nama-guru-baru" placeholder="Masukkan nama guru baharu..." class="input-sm" style="flex:1">
       <button class="btn btn-success" onclick="tambahGuruBaharu()">+ Tambah Guru</button>
     </div>
-
     <input class="search-box" placeholder="Cari guru..." id="cari-rename" oninput="renderRenameGuru()">
     <div id="rename-guru-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px;max-height:400px;overflow-y:auto"></div>
     <div style="margin-top:12px"><button class="btn btn-primary" onclick="simpanNamaGuru()">💾 Simpan Nama Guru</button></div>
@@ -335,6 +355,9 @@ tr:hover td{background:#f8fafc}
 </div>
 
 <script>
+// ── URL GS HARDCODE ──
+const GS_URL = 'https://script.google.com/macros/s/AKfycbwNkdLv9foAWeXcLHqhXjeXC0bppKWbxbxKzu_4AKotBomcOO0wPnP0SgEA1Wt58oU4/exec';
+
 const SLOT_KEYS=['W1','W2','W3','W4','Rehat1','W5','Rehat2','W6','W7','W8','W9','W10','W11','W12','W13','W14'];
 const REHAT_SLOTS=['Rehat1','Rehat2'];
 const WAKTU_AJAR=SLOT_KEYS.filter(s=>!REHAT_SLOTS.includes(s));
@@ -347,8 +370,11 @@ const DEFAULT_LABELS={
   W11:'Waktu 11 (13:30-14:00)',W12:'Waktu 12 (14:00-14:30)',W13:'Waktu 13 (14:30-15:00)',
   W14:'Waktu 14 (15:00-15:30)'
 };
+const DEFAULT_JENIS=['RASMI','CRK','CTR','CB','CS','CK','KELUAR WAKTU BEKERJA','MESYUARAT'];
+
 let appData={
-  gsUrl:'',namaSekolah:'',logoSekolah:'',waktuLabels:{...DEFAULT_LABELS},
+  namaSekolah:'',logoSekolah:'',waktuLabels:{...DEFAULT_LABELS},
+  jenisKetidakhadiran:[...DEFAULT_JENIS],
   guru:[],jadual:{},rekod:[],
   pengecualianHariIni:[],guruAbsentHariIni:[],reliefJanaan:[],
   currentPage:1,rekodPerPage:25
@@ -358,10 +384,10 @@ let hariAktif='Isnin';
 function loadLocal(){
   try{
     const d=JSON.parse(localStorage.getItem('reliefAppV3')||'{}');
-    if(d.gsUrl)appData.gsUrl=d.gsUrl;
     if(d.namaSekolah)appData.namaSekolah=d.namaSekolah;
     if(d.logoSekolah)appData.logoSekolah=d.logoSekolah;
     if(d.waktuLabels)appData.waktuLabels=d.waktuLabels;
+    if(d.jenisKetidakhadiran)appData.jenisKetidakhadiran=d.jenisKetidakhadiran;
     if(d.guru)appData.guru=d.guru;
     if(d.jadual)appData.jadual=d.jadual;
     if(d.rekod)appData.rekod=d.rekod;
@@ -370,10 +396,13 @@ function loadLocal(){
 
 function saveLocal(){
   localStorage.setItem('reliefAppV3',JSON.stringify({
-    gsUrl:appData.gsUrl,namaSekolah:appData.namaSekolah,
+    namaSekolah:appData.namaSekolah,
     logoSekolah:appData.logoSekolah,
-    waktuLabels:appData.waktuLabels,guru:appData.guru,
-    jadual:appData.jadual,rekod:appData.rekod
+    waktuLabels:appData.waktuLabels,
+    jenisKetidakhadiran:appData.jenisKetidakhadiran,
+    guru:appData.guru,
+    jadual:appData.jadual,
+    rekod:appData.rekod
   }));
 }
 
@@ -401,73 +430,100 @@ function showTab(t){
   document.getElementById('tab-'+t).classList.add('active');
   if(t==='jadual')renderJadualTable();
   if(t==='rekod'){populateFilterGuru();renderRekod();}
-  if(t==='tetapan'){renderTetapan();renderRenameGuru();}
+  if(t==='tetapan'){renderTetapan();renderRenameGuru();renderJenisList();}
 }
 
-// Tambah Guru Baharu ke GS dan Lokal
-async function tambahGuruBaharu() {
-  const inputNama = document.getElementById('nama-guru-baru');
-  const nama = inputNama.value.trim();
-  
-  if (!nama) {
-    alert('Sila masukkan nama guru.');
-    return;
-  }
-
-  const lastId = appData.guru.length > 0 ? parseInt(appData.guru[appData.guru.length - 1].id.substring(1)) : 0;
-  const newId = `G${String(lastId + 1).padStart(2, '0')}`;
-  const guruBaru = { id: newId, nama: nama };
-
-  if (appData.gsUrl) {
-    try {
-      await gsRequest('tambahGuru', { id: newId, nama: nama });
-    } catch (e) {
-      alert('Gagal tambah ke GS, tapi akan ditambah ke lokal: ' + e.message);
+// ── SAMBUNGAN GS AUTOMATIK ──
+async function semakSambungan(){
+  const badge=document.getElementById('gs-status-badge');
+  const icon=document.getElementById('gs-status-icon');
+  const text=document.getElementById('gs-status-text');
+  const panel=document.getElementById('gs-info-panel');
+  badge.textContent='Menyemak...';badge.className='badge badge-amber';
+  try{
+    const d=await gsRequest('test',{});
+    if(d.status==='ok'){
+      badge.textContent='Tersambung';badge.className='badge badge-green';
+      icon.textContent='✅';text.textContent='Google Sheet berjaya disambung';
+      panel.style.background='#f0fdf4';panel.style.borderColor='#bbf7d0';
     }
+  }catch(e){
+    badge.textContent='Gagal';badge.className='badge badge-red';
+    icon.textContent='❌';text.textContent='Gagal sambung ke Google Sheet';
+    panel.style.background='#fef2f2';panel.style.borderColor='#fecaca';
   }
+}
 
-  appData.guru.push(guruBaru);
-  HARI_LIST.forEach(hari => {
-    if (!appData.jadual[hari]) appData.jadual[hari] = {};
-    appData.jadual[hari][newId] = Object.fromEntries(WAKTU_AJAR.map(s => [s, '']));
+// ── JENIS KETIDAKHADIRAN ──
+function renderJenisList(){
+  const list=document.getElementById('jenis-list');
+  list.innerHTML=appData.jenisKetidakhadiran.map((j,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px">
+      <span style="flex:1;font-size:13px;font-weight:500">${j}</span>
+      <button class="btn btn-danger" style="padding:3px 8px;font-size:11px" onclick="padamJenis(${i})">🗑</button>
+    </div>`).join('');
+}
+
+function tambahJenisKetidakhadiran(){
+  const input=document.getElementById('jenis-baru-input');
+  const val=input.value.trim().toUpperCase();
+  if(!val){alert('Sila masukkan jenis ketidakhadiran.');return;}
+  if(appData.jenisKetidakhadiran.includes(val)){alert('Jenis ini sudah wujud.');return;}
+  appData.jenisKetidakhadiran.push(val);
+  input.value='';
+  saveLocal();renderJenisList();
+}
+
+function padamJenis(i){
+  if(!confirm(`Padam jenis "${appData.jenisKetidakhadiran[i]}"?`))return;
+  appData.jenisKetidakhadiran.splice(i,1);
+  saveLocal();renderJenisList();
+}
+
+async function simpanJenisKeGS(){
+  try{
+    await gsRequest('saveJenisKetidakhadiran',{senarai:appData.jenisKetidakhadiran});
+    alert('Jenis ketidakhadiran disimpan ke GS!');
+  }catch(e){alert('Disimpan lokal sahaja.');}
+}
+
+function populateSelectJenis(){
+  const sel=document.getElementById('select-jenis-ketidakhadiran');
+  sel.innerHTML='<option value="">-- Pilih Jenis --</option>';
+  appData.jenisKetidakhadiran.forEach(j=>{
+    sel.innerHTML+=`<option value="${j}">${j}</option>`;
   });
+}
 
-  inputNama.value = '';
-  saveLocal();
-  renderRenameGuru();
+// ── TAMBAH & PADAM GURU ──
+async function tambahGuruBaharu() {
+  const inputNama=document.getElementById('nama-guru-baru');
+  const nama=inputNama.value.trim();
+  if(!nama){alert('Sila masukkan nama guru.');return;}
+  const lastId=appData.guru.length>0?parseInt(appData.guru[appData.guru.length-1].id.substring(1)):0;
+  const newId=`G${String(lastId+1).padStart(2,'0')}`;
+  try{await gsRequest('tambahGuru',{id:newId,nama});}catch(e){alert('Gagal tambah ke GS: '+e.message);return;}
+  appData.guru.push({id:newId,nama});
+  HARI_LIST.forEach(hari=>{
+    if(!appData.jadual[hari])appData.jadual[hari]={};
+    appData.jadual[hari][newId]=Object.fromEntries(WAKTU_AJAR.map(s=>[s,'']));
+  });
+  inputNama.value='';saveLocal();renderRenameGuru();
   alert('Guru berjaya ditambah!');
 }
 
-// Padam Guru dari GS dan Lokal
-async function padamGuru(id) {
-  const g = appData.guru.find(x => x.id === id);
-  if (!confirm(`Padam guru "${g.nama}" secara kekal?`)) return;
-
-  if (appData.gsUrl) {
-    try {
-      await gsRequest('padamGuru', { id });
-    } catch (e) {
-      alert('Gagal padam di GS: ' + e.message);
-      return;
-    }
-  }
-
-  appData.guru = appData.guru.filter(x => x.id !== id);
-  HARI_LIST.forEach(hari => {
-    if (appData.jadual[hari]) delete appData.jadual[hari][id];
-  });
-
-  saveLocal();
-  renderRenameGuru();
-  alert('Guru berjaya dipadam.');
+async function padamGuru(id){
+  const g=appData.guru.find(x=>x.id===id);
+  if(!confirm(`Padam guru "${g.nama}" secara kekal?`))return;
+  try{await gsRequest('padamGuru',{id});}catch(e){alert('Gagal padam di GS: '+e.message);return;}
+  appData.guru=appData.guru.filter(x=>x.id!==id);
+  HARI_LIST.forEach(hari=>{if(appData.jadual[hari])delete appData.jadual[hari][id];});
+  saveLocal();renderRenameGuru();alert('Guru berjaya dipadam.');
 }
 
 function renderRenameGuru(){
   const q=document.getElementById('cari-rename').value.toLowerCase();
-  const filtered=appData.guru.filter(g=>g.nama.toLowerCase().includes(q));
-  
-  // Penambahan: Butang Padam pada setiap guru
-  document.getElementById('rename-guru-grid').innerHTML=filtered.map(g=>`
+  document.getElementById('rename-guru-grid').innerHTML=appData.guru.filter(g=>g.nama.toLowerCase().includes(q)).map(g=>`
     <div class="rename-item">
       <input type="text" class="input-sm" value="${g.nama}" onchange="updateNamaLokal('${g.id}',this.value)">
       <button class="btn btn-danger" style="padding:4px 8px;" onclick="padamGuru('${g.id}')">🗑</button>
@@ -480,7 +536,6 @@ function updateNamaLokal(id,val){
 }
 
 async function simpanNamaGuru(){
-  if(!appData.gsUrl){alert('Sila set URL GS dahulu.');return;}
   const btn=event.target;btn.disabled=true;btn.innerHTML='<span class="loading"></span> Menyimpan...';
   try{
     await gsRequest('saveNamaGuru',{updates:appData.guru});
@@ -519,7 +574,6 @@ function tambahGuruAbsent(){
   if(!id)return;
   const g=appData.guru.find(x=>x.id===id);
   if(!g||appData.guruAbsentHariIni.find(x=>x.id===id))return;
-  // Simpan guru sementara, tunggu pilihan jenis
   appData._guruAbsentPending=g;
   document.getElementById('pilih-guru-absent').value='';
   bukaModalJenis(g);
@@ -532,6 +586,8 @@ function bukaModalJenis(g){
   _guruPending=g;
   _waktuTerpilih=[];
   document.getElementById('modal-jenis-title').textContent='Jenis Ketidakhadiran: '+g.nama;
+  populateSelectJenis();
+  document.getElementById('select-jenis-ketidakhadiran').value='';
   document.getElementById('modal-jenis').style.display='flex';
 }
 
@@ -541,79 +597,68 @@ function tutupModalJenis(){
   populatePilihGuru();
 }
 
-function pilihJenisAbsent(jenis){
+function pilihJenisAbsent(tempoh){
+  const jenisVal=document.getElementById('select-jenis-ketidakhadiran').value;
+  if(!jenisVal){alert('Sila pilih jenis ketidakhadiran terlebih dahulu.');return;}
   document.getElementById('modal-jenis').style.display='none';
-  if(jenis==='sehari'){
-    // Semua waktu — tiada sekatan
-    appData.guruAbsentHariIni.push({..._guruPending, jenisAbsent:'sehari', waktuTertentu:[]});
-    renderGuruAbsentTags();
-    populatePilihGuru();
-    _guruPending=null;
+  if(tempoh==='sehari'){
+    appData.guruAbsentHariIni.push({..._guruPending,jenisAbsent:'sehari',jenisKetidakhadiran:jenisVal,waktuTertentu:[]});
+    renderGuruAbsentTags();populatePilihGuru();_guruPending=null;
   } else {
-    // Buka modal pilih waktu
-    bukaModalWaktu();
+    bukaModalWaktu(jenisVal);
   }
 }
 
-function bukaModalWaktu(){
+let _jenisKetidakhadiran='';
+
+function bukaModalWaktu(jenis){
+  _jenisKetidakhadiran=jenis||'';
   const hari=document.getElementById('hari-input').value;
-  const jadualGuru=getJadualGuru(_guruPending.id, hari);
+  const jadualGuru=getJadualGuru(_guruPending.id,hari);
   document.getElementById('modal-waktu-title').textContent='Waktu Ketidakhadiran: '+_guruPending.nama;
   _waktuTerpilih=[];
-
   const grid=document.getElementById('modal-waktu-grid');
   grid.innerHTML=SLOT_KEYS.map(s=>{
     const isRehat=REHAT_SLOTS.includes(s);
     const label=appData.waktuLabels[s]||s;
     if(isRehat){
-      // Rehat boleh dipilih — tunjuk dengan warna berbeza tapi boleh klik
       return `<div class="waktu-btn" id="wb-${s}" onclick="toggleWaktuPilih('${s}',this)"
         style="background:#fef9c3;border-color:#fde68a;color:#854d0e">
-        ${label}<br><span style="font-size:9px">Rehat</span>
-      </div>`;
+        ${label}<br><span style="font-size:9px">Rehat</span></div>`;
     }
     const adaKelas=jadualGuru[s]&&jadualGuru[s].trim();
     const kelasTxt=adaKelas?`<br><span style="font-size:9px;opacity:.8">${jadualGuru[s].split(' - ')[0]}</span>`:'';
     return `<div class="waktu-btn" id="wb-${s}" onclick="toggleWaktuPilih('${s}',this)"
       style="${!adaKelas?'opacity:.5':''}">
-      ${label}${kelasTxt}
-    </div>`;
+      ${label}${kelasTxt}</div>`;
   }).join('');
-
   document.getElementById('modal-waktu').style.display='flex';
 }
 
-function toggleWaktuPilih(slot, el){
+function toggleWaktuPilih(slot,el){
   if(_waktuTerpilih.includes(slot)){
     _waktuTerpilih=_waktuTerpilih.filter(s=>s!==slot);
     el.classList.remove('selected');
-    // Pulihkan warna asal rehat jika dinyahpilih
-    if(REHAT_SLOTS.includes(slot)){
-      el.style.background='#fef9c3';el.style.borderColor='#fde68a';el.style.color='#854d0e';
-    }
+    if(REHAT_SLOTS.includes(slot)){el.style.background='#fef9c3';el.style.borderColor='#fde68a';el.style.color='#854d0e';}
   } else {
-    _waktuTerpilih.push(slot);
-    el.classList.add('selected');
+    _waktuTerpilih.push(slot);el.classList.add('selected');
   }
 }
 
 function tutupModalWaktu(){
   document.getElementById('modal-waktu').style.display='none';
-  _guruPending=null;
-  populatePilihGuru();
+  _guruPending=null;populatePilihGuru();
 }
 
 function sahkanWaktuTertentu(){
   if(!_waktuTerpilih.length){alert('Sila pilih sekurang-kurangnya 1 waktu.');return;}
   document.getElementById('modal-waktu').style.display='none';
   appData.guruAbsentHariIni.push({
-    ..._guruPending,
-    jenisAbsent:'waktu',
+    ..._guruPending,jenisAbsent:'waktu',
+    jenisKetidakhadiran:_jenisKetidakhadiran,
     waktuTertentu:[..._waktuTerpilih]
   });
-  renderGuruAbsentTags();
-  populatePilihGuru();
-  _guruPending=null;
+  renderGuruAbsentTags();populatePilihGuru();_guruPending=null;
 }
 
 function removeGuruAbsent(id){
@@ -624,10 +669,10 @@ function removeGuruAbsent(id){
 function renderGuruAbsentTags(){
   document.getElementById('guru-absent-list').innerHTML=
     appData.guruAbsentHariIni.map(g=>{
-      const info=g.jenisAbsent==='waktu'
-        ?`<span style="font-size:10px;background:#fef3c7;color:#92400e;padding:1px 6px;border-radius:10px;margin-left:4px">${g.waktuTertentu.length} waktu</span>`
-        :'';
-      return `<span class="guru-absent-tag">${g.nama}${info}<button onclick="removeGuruAbsent('${g.id}')">×</button></span>`;
+      const jenisBadge=g.jenisKetidakhadiran?`<span class="jenis-badge">${g.jenisKetidakhadiran}</span>`:'';
+      const waktuInfo=g.jenisAbsent==='waktu'
+        ?`<span style="font-size:10px;background:#fef3c7;color:#92400e;padding:1px 6px;border-radius:10px;margin-left:4px">${g.waktuTertentu.length} waktu</span>`:'';
+      return `<span class="guru-absent-tag">${g.nama}${jenisBadge}${waktuInfo}<button onclick="removeGuruAbsent('${g.id}')">×</button></span>`;
     }).join('');
 }
 
@@ -676,10 +721,8 @@ function togglePengecualian(id,cb){
 
 async function simpanPengecualian(){
   const btn=event.target;btn.disabled=true;btn.innerHTML='<span class="loading"></span> Menyimpan...';
-  if(appData.gsUrl){
-    const updates=appData.guru.map(g=>({id:g.id,pengecualian:appData.pengecualianHariIni.includes(g.id)?'TRUE':'FALSE'}));
-    try{await gsRequest('savePengecualian',{updates});}catch(e){}
-  }
+  const updates=appData.guru.map(g=>({id:g.id,pengecualian:appData.pengecualianHariIni.includes(g.id)?'TRUE':'FALSE'}));
+  try{await gsRequest('savePengecualian',{updates});}catch(e){}
   btn.disabled=false;btn.innerHTML='💾 Simpan Pengecualian';
   document.getElementById('step2-panel').style.display='none';
   document.getElementById('step3-panel').style.display='block';
@@ -689,10 +732,14 @@ async function simpanPengecualian(){
 function renderJanaInfo(){
   const tarikh=document.getElementById('tarikh-input').value;
   const hari=document.getElementById('hari-input').value;
+  const guruInfo=appData.guruAbsentHariIni.map(g=>{
+    const jenis=g.jenisKetidakhadiran?` <span class="jenis-badge">${g.jenisKetidakhadiran}</span>`:'';
+    return g.nama+jenis;
+  }).join(', ');
   document.getElementById('jana-info').innerHTML=`
     <div class="alert alert-info">
       <strong>Tarikh:</strong> ${formatTarikh(tarikh)} (${hari})<br>
-      <strong>Guru Tidak Hadir:</strong> ${appData.guruAbsentHariIni.map(g=>g.nama).join(', ')}<br>
+      <strong>Guru Tidak Hadir:</strong> ${guruInfo}<br>
       <strong>Guru Dikecualikan:</strong> ${appData.pengecualianHariIni.length} orang
     </div>`;
 }
@@ -718,25 +765,17 @@ function janaRelief(){
   const exclIds=appData.pengecualianHariIni;
   const bilAbsent=absentIds.length;
   const modPeperiksaan=document.getElementById('mod-peperiksaan').checked;
-
   const guruAvail=appData.guru.filter(g=>!absentIds.includes(g.id)&&!exclIds.includes(g.id));
-
-  // Kira relief yang sudah dilakukan sebelum sesi ini (rekod lama)
   const reliefLepas={};
   guruAvail.forEach(g=>{reliefLepas[g.id]=0;});
   appData.rekod.filter(r=>r.tarikh===tarikh).forEach(r=>{
     if(reliefLepas[r.guruReliefId]!==undefined) reliefLepas[r.guruReliefId]++;
   });
-
-  // Tracker relief dalam sesi jana ini sahaja
   const reliefSesi={};
   guruAvail.forEach(g=>{reliefSesi[g.id]=0;});
-
-  // ── HELPER: hitung waktu ajar guru pada hari ini ──
   const waktuAjar=g=>hitungWaktuAjar(g.id,hari);
   const jadualG=g=>getJadualGuru(g.id,hari);
 
-  // ── HELPER: semak buffer (1 slot bersebelahan ada kelas) ──
   function adaBuffer1(guruId,slot){
     const j=getJadualGuru(guruId,hari);
     const idx=WAKTU_AJAR.indexOf(slot);
@@ -745,194 +784,90 @@ function janaRelief(){
     return (s1&&j[s1]&&j[s1].trim())||(s2&&j[s2]&&j[s2].trim());
   }
 
-  // ── HELPER: semak buffer ketat (3 waktu berturut tanpa putus) ──
-  // Contoh: jadual ada W2,W3,W4 → W1 dan W5 TIDAK BOLEH langsung
-  // Tapi jika jadual W4,W5 → W3 masih boleh (bukan 3 berturut)
   function adaBuffer3Berturut(guruId,slot){
     const j=getJadualGuru(guruId,hari);
     const idx=WAKTU_AJAR.indexOf(slot);
-
-    // Semak sama ada slot yang dicadang akan menyebabkan 3 waktu berturut
-    // dengan waktu dalam jadual guru
-    // Kira berapa waktu berturut di sekitar slot ini (termasuk slot itu sendiri jika diberi)
-    function adaKelas(s){ return s && j[s] && j[s].trim(); }
-
-    // Semak ke kiri: berapa waktu berturut sebelum slot ini ada kelas
+    function adaKelas(s){return s&&j[s]&&j[s].trim();}
     let kiriCount=0;
-    for(let i=idx-1;i>=0;i--){
-      if(adaKelas(WAKTU_AJAR[i])) kiriCount++;
-      else break;
-    }
-    // Semak ke kanan: berapa waktu berturut selepas slot ini ada kelas
+    for(let i=idx-1;i>=0;i--){if(adaKelas(WAKTU_AJAR[i]))kiriCount++;else break;}
     let kananCount=0;
-    for(let i=idx+1;i<WAKTU_AJAR.length;i++){
-      if(adaKelas(WAKTU_AJAR[i])) kananCount++;
-      else break;
-    }
-    // Jika slot ini diisi, jumlah berturut = kiriCount + 1 + kananCount
-    // Halang jika akan jadi >= 3 berturut
-    return (kiriCount + 1 + kananCount) >= 3;
+    for(let i=idx+1;i<WAKTU_AJAR.length;i++){if(adaKelas(WAKTU_AJAR[i]))kananCount++;else break;}
+    return (kiriCount+1+kananCount)>=3;
   }
 
-  // ── HELPER: mod peperiksaan ──
   function guruMengajarKelasIni(guruId,kelas){
     const j=getJadualGuru(guruId,hari);
     return WAKTU_AJAR.some(s=>j[s]&&j[s].trim().startsWith(kelas));
   }
 
-  // ── FUNGSI PILIH GURU — 3 peringkat keutamaan ──
-  function pilihGuru(slot, kelas){
-
-    // Tapis asas: slot kosong pada hari ini, waktu mengajar < 8
+  function pilihGuru(slot,kelas){
     let pool=guruAvail.filter(g=>{
       const j=jadualG(g);
-      return (!j[slot]||!j[slot].trim()) && waktuAjar(g)<8;
+      return (!j[slot]||!j[slot].trim())&&waktuAjar(g)<8;
     });
+    if(modPeperiksaan&&kelas)pool=pool.filter(g=>!guruMengajarKelasIni(g.id,kelas));
+    if(!pool.length)return{guru:null,catatan:'Tiada calon'};
 
-    // Mod Peperiksaan: buang guru yang mengajar kelas yang sama
-    if(modPeperiksaan&&kelas){
-      pool=pool.filter(g=>!guruMengajarKelasIni(g.id,kelas));
+    const p1=pool.filter(g=>waktuAjar(g)<=6&&reliefSesi[g.id]===0);
+    const p1b=p1.filter(g=>!adaBuffer1(g.id,slot));
+    if(p1b.length){
+      p1b.sort((a,b)=>{const wa=waktuAjar(a),wb=waktuAjar(b);if(wa!==wb)return wa-wb;return(reliefLepas[a.id]||0)-(reliefLepas[b.id]||0);});
+      return{guru:p1b[0],catatan:''};
     }
 
-    if(!pool.length) return {guru:null,catatan:'Tiada calon'};
-
-    // ════════════════════════════════════════════
-    // PERINGKAT 1: Guru ≤6 waktu + belum dapat relief sesi ini
-    // Had: maksimum 1 relief dalam peringkat ini
-    // ════════════════════════════════════════════
-    const p1=pool.filter(g=>waktuAjar(g)<=6 && reliefSesi[g.id]===0);
-    // Tapis buffer (elak bersebelahan)
-    const p1_tanpaBuffer=p1.filter(g=>!adaBuffer1(g.id,slot));
-    const p1_calon=p1_tanpaBuffer.length?p1_tanpaBuffer:[];
-
-    if(p1_calon.length){
-      p1_calon.sort((a,b)=>{
-        const wa=waktuAjar(a),wb=waktuAjar(b);
-        if(wa!==wb) return wa-wb;
-        return (reliefLepas[a.id]||0)-(reliefLepas[b.id]||0);
-      });
-      return {guru:p1_calon[0], catatan:''};
+    const p2=pool.filter(g=>waktuAjar(g)<=5&&reliefSesi[g.id]===1);
+    const p2b=p2.filter(g=>!adaBuffer1(g.id,slot));
+    if(p2b.length){
+      p2b.sort((a,b)=>{const wa=waktuAjar(a),wb=waktuAjar(b);if(wa!==wb)return wa-wb;return(reliefLepas[a.id]||0)-(reliefLepas[b.id]||0);});
+      return{guru:p2b[0],catatan:'[P2: Tambah relief]'};
     }
 
-    // ════════════════════════════════════════════
-    // PERINGKAT 2: Guru ≤5 waktu + sudah 1 relief → boleh dapat 1 lagi
-    // (sudah ada reliefSesi===1, waktu ≤5)
-    // ════════════════════════════════════════════
-    const p2=pool.filter(g=>waktuAjar(g)<=5 && reliefSesi[g.id]===1);
-    const p2_tanpaBuffer=p2.filter(g=>!adaBuffer1(g.id,slot));
-    const p2_calon=p2_tanpaBuffer.length?p2_tanpaBuffer:[];
-
-    if(p2_calon.length){
-      p2_calon.sort((a,b)=>{
-        const wa=waktuAjar(a),wb=waktuAjar(b);
-        if(wa!==wb) return wa-wb;
-        return (reliefLepas[a.id]||0)-(reliefLepas[b.id]||0);
-      });
-      return {guru:p2_calon[0], catatan:'[P2: Tambah relief]'};
-    }
-
-    // ════════════════════════════════════════════
-    // PERINGKAT 3 (KRITIKAL): Fallback — guna mana-mana guru tersedia
-    // Syarat buffer ketat: elak 3 waktu berturut-turut
-    // Buffer biasa boleh dilangkau jika tiada pilihan lain
-    // ════════════════════════════════════════════
-
-    // P3a: Tiada 3 berturut, buffer biasa dilangkau
     const p3a=pool.filter(g=>!adaBuffer3Berturut(g.id,slot));
     if(p3a.length){
-      // Utamakan yang belum dapat relief dulu
-      const p3a_belum=p3a.filter(g=>reliefSesi[g.id]===0);
-      const p3a_calon=(p3a_belum.length?p3a_belum:p3a);
-      p3a_calon.sort((a,b)=>{
-        const wa=waktuAjar(a),wb=waktuAjar(b);
-        if(wa!==wb) return wa-wb;
-        if(reliefSesi[a.id]!==reliefSesi[b.id]) return reliefSesi[a.id]-reliefSesi[b.id];
-        return (reliefLepas[a.id]||0)-(reliefLepas[b.id]||0);
-      });
-      return {guru:p3a_calon[0], catatan:'[Kritikal: buffer dilangkau]'};
+      const p3ab=p3a.filter(g=>reliefSesi[g.id]===0);
+      const p3c=p3ab.length?p3ab:p3a;
+      p3c.sort((a,b)=>{const wa=waktuAjar(a),wb=waktuAjar(b);if(wa!==wb)return wa-wb;if(reliefSesi[a.id]!==reliefSesi[b.id])return reliefSesi[a.id]-reliefSesi[b.id];return(reliefLepas[a.id]||0)-(reliefLepas[b.id]||0);});
+      return{guru:p3c[0],catatan:'[Kritikal: buffer dilangkau]'};
     }
 
-    // P3b: Situasi sangat kritikal — semua guru berisiko 3 berturut, ambil yang paling sesuai
-    pool.sort((a,b)=>{
-      const wa=waktuAjar(a),wb=waktuAjar(b);
-      if(wa!==wb) return wa-wb;
-      if(reliefSesi[a.id]!==reliefSesi[b.id]) return reliefSesi[a.id]-reliefSesi[b.id];
-      return (reliefLepas[a.id]||0)-(reliefLepas[b.id]||0);
-    });
-    return {guru:pool[0]||null, catatan:'[Kritikal: 3 berturut tidak dapat dielak]'};
+    pool.sort((a,b)=>{const wa=waktuAjar(a),wb=waktuAjar(b);if(wa!==wb)return wa-wb;if(reliefSesi[a.id]!==reliefSesi[b.id])return reliefSesi[a.id]-reliefSesi[b.id];return(reliefLepas[a.id]||0)-(reliefLepas[b.id]||0);});
+    return{guru:pool[0]||null,catatan:'[Kritikal: 3 berturut tidak dapat dielak]'};
   }
 
-  // ── JANA RESULT ──
   const hasil=[];
   appData.guruAbsentHariIni.forEach(absentGuru=>{
     const jadualAbsent=getJadualGuru(absentGuru.id,hari);
-
-    // Slot yang perlu relief: waktu tertentu atau 1 hari penuh
     const slotRelief=absentGuru.jenisAbsent==='waktu'
       ?(absentGuru.waktuTertentu||[]).filter(s=>WAKTU_AJAR.includes(s))
       :WAKTU_AJAR;
-
     slotRelief.forEach(slot=>{
       const ks=jadualAbsent[slot];
       if(!ks||!ks.trim())return;
       const parts=ks.split(' - ');
-      const kelas=parts[0]||ks, subjek=parts[1]||'';
-
-      const {guru:gr, catatan}=pilihGuru(slot,kelas);
-
-      if(gr){
-        reliefSesi[gr.id]=(reliefSesi[gr.id]||0)+1;
-        reliefLepas[gr.id]=(reliefLepas[gr.id]||0)+1;
-      }
-
+      const kelas=parts[0]||ks,subjek=parts[1]||'';
+      const{guru:gr,catatan}=pilihGuru(slot,kelas);
+      if(gr){reliefSesi[gr.id]=(reliefSesi[gr.id]||0)+1;reliefLepas[gr.id]=(reliefLepas[gr.id]||0)+1;}
       hasil.push({
-        absentId:absentGuru.id, absentNama:absentGuru.nama,
-        slot, slotLabel:appData.waktuLabels[slot]||slot,
-        kelas, subjek,
+        absentId:absentGuru.id,absentNama:absentGuru.nama,
+        jenisKetidakhadiran:absentGuru.jenisKetidakhadiran||'',
+        slot,slotLabel:appData.waktuLabels[slot]||slot,
+        kelas,subjek,
         guruRelifId:gr?.id||null,
         guruRelifNama:gr?.nama||'-- Tiada Guru --',
-        gabung:false, gabungDengan:null,
-        catatan,
-        catatanGuru:''
+        gabung:false,gabungDengan:null,
+        catatan,catatanGuru:''
       });
     });
   });
 
-  // ── GABUNG KELAS (syarat baru) ──
-  // Syarat 1: 1 guru jaga maksimum 2 kelas yang digabung sahaja
-  // Syarat 2: Hanya 4 kelas (2 pasangan) boleh digabung pada satu-satu masa
-  // Contoh: Guru A → Kelas 1Arif + 1Din | Guru B → Kelas 2Cem + 2Bestari
+  // Gabung kelas (syarat: max 2 kelas per guru, max 4 kelas per slot)
   if(bilAbsent>=6){
     const bySlot={};
-    hasil.forEach((r,i)=>{
-      if(!bySlot[r.slot]) bySlot[r.slot]=[];
-      bySlot[r.slot].push({...r,idx:i});
-    });
-
+    hasil.forEach((r,i)=>{if(!bySlot[r.slot])bySlot[r.slot]=[];bySlot[r.slot].push({...r,idx:i});});
     Object.values(bySlot).forEach(items=>{
-      if(items.length<2) return;
-
-      // Susun: item[0] kekal dengan guru asal, item[1] digabung dengan item[0]
-      // item[2] kekal dengan guru asal, item[3] digabung dengan item[2]
-      // item[4] ke atas: tidak digabung (kehadkan 4 kelas sahaja)
-
-      // Pasangan 1: items[0] dan items[1]
-      if(items.length>=2){
-        hasil[items[1].idx].gabung=true;
-        hasil[items[1].idx].gabungDengan=items[0].kelas;
-        hasil[items[1].idx].guruRelifId=items[0].guruRelifId;
-        hasil[items[1].idx].guruRelifNama=items[0].guruRelifNama;
-      }
-
-      // Pasangan 2: items[2] dan items[3] (jika ada, had 4 kelas)
-      if(items.length>=4){
-        hasil[items[3].idx].gabung=true;
-        hasil[items[3].idx].gabungDengan=items[2].kelas;
-        hasil[items[3].idx].guruRelifId=items[2].guruRelifId;
-        hasil[items[3].idx].guruRelifNama=items[2].guruRelifNama;
-      }
-
-      // items[4] ke atas: biarkan tanpa gabung (had tempat)
+      if(items.length<2)return;
+      if(items.length>=2){hasil[items[1].idx].gabung=true;hasil[items[1].idx].gabungDengan=items[0].kelas;hasil[items[1].idx].guruRelifId=items[0].guruRelifId;hasil[items[1].idx].guruRelifNama=items[0].guruRelifNama;}
+      if(items.length>=4){hasil[items[3].idx].gabung=true;hasil[items[3].idx].gabungDengan=items[2].kelas;hasil[items[3].idx].guruRelifId=items[2].guruRelifId;hasil[items[3].idx].guruRelifNama=items[2].guruRelifNama;}
     });
   }
 
@@ -944,10 +879,19 @@ function renderReliefOutput(){
   const h=appData.reliefJanaan;
   if(!h.length){document.getElementById('relief-output').innerHTML='<div class="alert alert-warning">Tiada kelas yang perlu relief.</div>';return;}
 
+  // Kumpulkan jenis ketidakhadiran untuk paparan ringkas
+  const guruAbsentInfo=appData.guruAbsentHariIni.map(g=>{
+    const jenis=g.jenisKetidakhadiran?` [${g.jenisKetidakhadiran}]`:'';
+    return g.nama+jenis;
+  }).join(', ');
+
   let html=`<div class="card"><div class="card-title">Hasil Janaan</div>
+  <div class="alert alert-info" style="margin-bottom:12px;font-size:12px">
+    <strong>Guru Tidak Hadir:</strong> ${guruAbsentInfo}
+  </div>
   <div style="overflow-x:auto">
   <table><thead><tr>
-    <th>Guru Tak Hadir</th><th>Waktu</th><th>Kelas</th><th>Subjek</th>
+    <th>Guru Tak Hadir</th><th>Jenis</th><th>Waktu</th><th>Kelas</th><th>Subjek</th>
     <th>Guru Ganti</th><th>Status</th><th style="min-width:160px">Catatan (boleh edit)</th>
   </tr></thead><tbody>`;
 
@@ -955,8 +899,10 @@ function renderReliefOutput(){
     const statusBadge=r.gabung?`<span class="badge badge-amber">Gabung: ${r.gabungDengan}</span>`:'';
     const syaratBadge=r.catatan?`<span class="badge badge-gray" style="font-size:10px;display:block;margin-top:3px">${r.catatan}</span>`:'';
     const guruWarna=r.guruRelifNama==='-- Tiada Guru --'?'color:#dc2626':'';
+    const jenisBadge=r.jenisKetidakhadiran?`<span class="jenis-badge">${r.jenisKetidakhadiran}</span>`:'<span style="font-size:11px;color:#94a3b8">-</span>';
     html+=`<tr>
       <td>${r.absentNama}</td>
+      <td>${jenisBadge}</td>
       <td style="white-space:nowrap">${r.slotLabel}</td>
       <td><strong>${r.kelas}</strong></td>
       <td>${r.subjek}</td>
@@ -985,6 +931,7 @@ async function simpanRekodJanaan(){
   const newRekods=appData.reliefJanaan.map(r=>({
     tarikh,hari,
     absentId:r.absentId,absentNama:r.absentNama,
+    jenisKetidakhadiran:r.jenisKetidakhadiran||'',
     slot:r.slot,slotLabel:r.slotLabel,
     kelas:r.kelas,subjek:r.subjek,
     guruReliefId:r.guruRelifId,guruReliefNama:r.guruRelifNama,
@@ -994,17 +941,9 @@ async function simpanRekodJanaan(){
   }));
   appData.rekod=[...newRekods,...appData.rekod];
   saveLocal();
-  if(appData.gsUrl){
-    try{
-      // Hantar dalam kelompok kecil
-      for(let i=0;i<newRekods.length;i+=20){
-        await gsRequest('saveRekod',{rekod:newRekods.slice(i,i+20)});
-      }
-    }catch(e){}
-  }
+  try{for(let i=0;i<newRekods.length;i+=20)await gsRequest('saveRekod',{rekod:newRekods.slice(i,i+20)});}catch(e){}
   b.disabled=false;b.innerHTML='💾 Simpan Rekod';
-  alert('Rekod berjaya disimpan!');
-  showTab('rekod');
+  alert('Rekod berjaya disimpan!');showTab('rekod');
 }
 
 function renderJadualTable(){
@@ -1028,12 +967,10 @@ function updateCell(gid,sid,val){
 function tukarHariJadual(h,el){
   hariAktif=h;
   document.querySelectorAll('.hari-tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  renderJadualTable();
+  el.classList.add('active');renderJadualTable();
 }
 
 async function simpanJadualHariIni(){
-  if(!appData.gsUrl){alert('Sila set URL GS dahulu.');return;}
   const btn=event.target;btn.disabled=true;btn.innerHTML='Menyimpan...';
   saveLocal();
   try{
@@ -1045,39 +982,29 @@ async function simpanJadualHariIni(){
 }
 
 async function simpanSemuaHari(){
-  if(!appData.gsUrl){alert('Sila set URL GS dahulu.');return;}
   if(!confirm('Simpan jadual UNTUK SEMUA HARI ke GS? Ini mungkin ambil masa.'))return;
   const btn=event.target;btn.disabled=true;btn.innerHTML='Menyimpan...';
   saveLocal();
   try{
-    let allUpdates=[];
-    HARI_LIST.forEach(h=>{
-      appData.guru.forEach(g=>allUpdates.push({id:g.id,hari:h,...getJadualGuru(g.id,h)}));
-    });
-    await simpanBatch(allUpdates);
-    alert('Semua jadual (5 hari) berjaya disimpan!');
+    let all=[];
+    HARI_LIST.forEach(h=>appData.guru.forEach(g=>all.push({id:g.id,hari:h,...getJadualGuru(g.id,h)})));
+    await simpanBatch(all);alert('Semua jadual (5 hari) berjaya disimpan!');
   }catch(e){alert('Gagal: '+e.message);}
   btn.disabled=false;btn.innerHTML='💾 Simpan Semua Hari';
 }
 
-// Hantar data dalam kelompok kecil supaya URL tidak terlalu panjang
-async function simpanBatch(updates, saizKelompok=10){
-  for(let i=0;i<updates.length;i+=saizKelompok){
-    const kelompok=updates.slice(i,i+saizKelompok);
-    await gsRequest('saveJadual',{updates:kelompok});
-  }
+async function simpanBatch(updates,saiz=10){
+  for(let i=0;i<updates.length;i+=saiz)await gsRequest('saveJadual',{updates:updates.slice(i,i+saiz)});
 }
 
 async function muatJadualDariGS(){
-  if(!appData.gsUrl){alert('Sila set URL GS dahulu.');return;}
   const btn=event.target;btn.disabled=true;btn.innerHTML='Memuat...';
   try{
     const res=await gsRequest('getJadual',{});
     if(res.data){
       res.data.forEach(r=>{
         if(!appData.jadual[r.hari])appData.jadual[r.hari]={};
-        const {id,hari,...slots}=r;
-        appData.jadual[hari][id]=slots;
+        const{id,hari,...slots}=r;appData.jadual[hari][id]=slots;
       });
       saveLocal();renderJadualTable();alert('Jadual berjaya dimuat dari GS!');
     }
@@ -1093,18 +1020,15 @@ function renderRekod(){
   if(dari)f=f.filter(r=>r.tarikh>=dari);
   if(hingga)f=f.filter(r=>r.tarikh<=hingga);
   if(gid)f=f.filter(r=>r.absentId===gid);
-  
-  const stats=document.getElementById('rekod-stats');
   const total=f.length;
   const topGanti={};
   f.forEach(r=>{if(r.guruReliefId)topGanti[r.guruReliefNama]=(topGanti[r.guruReliefNama]||0)+1;});
   const topEntry=Object.entries(topGanti).sort((a,b)=>b[1]-a[1])[0]||['-',0];
-  stats.innerHTML=`<div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">Total Relief</div></div><div class="stat-card"><div class="stat-num">${topEntry[1]}</div><div class="stat-label">Top Ganti: ${topEntry[0]}</div></div>`;
-
+  document.getElementById('rekod-stats').innerHTML=`<div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">Total Relief</div></div><div class="stat-card"><div class="stat-num">${topEntry[1]}</div><div class="stat-label">Top Ganti: ${topEntry[0]}</div></div>`;
   const start=(appData.currentPage-1)*appData.rekodPerPage;
   const data=f.slice(start,start+appData.rekodPerPage);
-  let html=`<table><thead><tr><th>Tarikh</th><th>Guru Tak Hadir</th><th>Waktu</th><th>Kelas</th><th>Guru Ganti</th></tr></thead><tbody>`;
-  data.forEach(r=>html+=`<tr><td>${r.tarikh}</td><td>${r.absentNama}</td><td>${r.slotLabel}</td><td>${r.kelas}</td><td>${r.guruReliefNama}</td></tr>`);
+  let html=`<table><thead><tr><th>Tarikh</th><th>Guru Tak Hadir</th><th>Jenis</th><th>Waktu</th><th>Kelas</th><th>Guru Ganti</th></tr></thead><tbody>`;
+  data.forEach(r=>html+=`<tr><td>${r.tarikh}</td><td>${r.absentNama}</td><td>${r.jenisKetidakhadiran?`<span class="jenis-badge">${r.jenisKetidakhadiran}</span>`:'-'}</td><td>${r.slotLabel}</td><td>${r.kelas}</td><td>${r.guruReliefNama}</td></tr>`);
   html+=`</tbody></table>`;
   document.getElementById('rekod-table-wrap').innerHTML=html;
   renderPagination(f.length);
@@ -1120,7 +1044,6 @@ function renderPagination(total){
 }
 
 function renderTetapan(){
-  document.getElementById('gs-url').value=appData.gsUrl;
   document.getElementById('nama-sekolah').value=appData.namaSekolah;
   if(appData.logoSekolah){
     document.getElementById('logo-preview').innerHTML=`<img src="${appData.logoSekolah}" style="width:100%;height:100%;object-fit:contain">`;
@@ -1129,98 +1052,115 @@ function renderTetapan(){
   g.innerHTML=SLOT_KEYS.map(s=>`<div><label>${s}</label><input class="input-sm" value="${appData.waktuLabels[s]||''}" onchange="appData.waktuLabels['${s}']=this.value;saveLocal()"></div>`).join('');
 }
 
-function simpanGSUrl(){appData.gsUrl=document.getElementById('gs-url').value.trim();saveLocal();}
 function simpanTetapanLokal(){appData.namaSekolah=document.getElementById('nama-sekolah').value;saveLocal();}
 
-async function testGSConnection(){
-  if(!appData.gsUrl){alert('Sila masukkan URL GS.');return;}
-  const resDiv=document.getElementById('gs-test-result');
-  resDiv.innerHTML='<span class="loading" style="border-color:#1a56db;border-top-color:transparent"></span> Menghubung...';
-  try{
-    const d=await gsRequest('test',{});
-    if(d.status==='ok'){
-      resDiv.innerHTML='<div class="alert alert-success">✅ Berjaya disambung!</div>';
-      document.getElementById('gs-status-badge').className='badge badge-green';
-      document.getElementById('gs-status-badge').textContent='Tersambung';
-    }
-  }catch(e){resDiv.innerHTML='<div class="alert alert-danger">❌ Gagal: '+e.message+'</div>';}
+async function simpanTetapanKeGS(){
+  try{await gsRequest('saveTetapan',{namaSekolah:appData.namaSekolah,logoSekolah:appData.logoSekolah});alert('Tetapan sekolah disimpan ke GS!');}catch(e){alert('Gagal simpan.');}
 }
 
+async function simpanWaktuKeGS(){
+  try{await gsRequest('saveWaktuLabels',{labels:appData.waktuLabels});alert('Label waktu disimpan ke GS!');}catch(e){alert('Gagal.');}
+}
+
+function uploadLogo(input){
+  if(input.files&&input.files[0]){
+    const reader=new FileReader();
+    reader.onload=function(e){appData.logoSekolah=e.target.result;saveLocal();renderTetapan();};
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+function buangLogo(){appData.logoSekolah='';document.getElementById('logo-preview').innerHTML='<span id="logo-placeholder" style="font-size:10px;color:#94a3b8;text-align:center;padding:4px">Tiada<br>Logo</span>';saveLocal();}
+
 async function muatSemuaData(){
-  if(!appData.gsUrl){alert('Sila set URL GS dahulu.');return;}
   try{
     const d=await gsRequest('getAllData',{});
     if(d.guru)appData.guru=d.guru;
     if(d.labels)appData.waktuLabels=d.labels;
     if(d.namaSekolah)appData.namaSekolah=d.namaSekolah;
     if(d.logoSekolah)appData.logoSekolah=d.logoSekolah;
+    if(d.jenisKetidakhadiran&&d.jenisKetidakhadiran.length)appData.jenisKetidakhadiran=d.jenisKetidakhadiran;
     if(d.jadual){
       d.jadual.forEach(r=>{
         if(!appData.jadual[r.hari])appData.jadual[r.hari]={};
-        const {id,hari,...slots}=r;appData.jadual[hari][id]=slots;
+        const{id,hari,...slots}=r;appData.jadual[hari][id]=slots;
       });
     }
-    saveLocal();populatePilihGuru();renderTetapan();renderRenameGuru();
-    alert('Semua data berjaya dimuat dari GS!');
-  }catch(e){alert('Gagal muat data: '+e.message);}
+    saveLocal();populatePilihGuru();renderTetapan();renderRenameGuru();renderJenisList();
+  }catch(e){console.log('Gagal muat data:',e.message);}
 }
-
-async function simpanTetapanKeGS(){
-  if(!appData.gsUrl)return;
-  try{await gsRequest('saveTetapan',{namaSekolah:appData.namaSekolah,logoSekolah:appData.logoSekolah});alert('Tetapan sekolah disimpan ke GS!');}catch(e){}
-}
-
-async function simpanWaktuKeGS(){
-  if(!appData.gsUrl)return;
-  try{await gsRequest('saveWaktuLabels',{labels:appData.waktuLabels});alert('Label waktu disimpan ke GS!');}catch(e){}
-}
-
-function uploadLogo(input){
-  if(input.files&&input.files[0]){
-    const reader=new FileReader();
-    reader.onload=function(e){
-      appData.logoSekolah=e.target.result;
-      saveLocal();renderTetapan();
-    };
-    reader.readAsDataURL(input.files[0]);
-  }
-}
-function buangLogo(){appData.logoSekolah='';document.getElementById('logo-preview').innerHTML='<span id="logo-placeholder" style="font-size:10px;color:#94a3b8;text-align:center;padding:4px">Tiada<br>Logo</span>';saveLocal();}
 
 async function gsRequest(action,payload){
-  const url=appData.gsUrl;
-  if(!url)throw new Error('No GS URL');
   const params=new URLSearchParams({action});
   Object.entries(payload).forEach(([k,v])=>{
     params.append(k,typeof v==='object'?encodeURIComponent(JSON.stringify(v)):encodeURIComponent(String(v)));
   });
-  const res=await fetch(`${url}?${params.toString()}`,{method:'GET',redirect:'follow'});
+  const res=await fetch(`${GS_URL}?${params.toString()}`,{method:'GET',redirect:'follow'});
   if(!res.ok)throw new Error('HTTP '+res.status);
   const text=await res.text();
   try{return JSON.parse(text);}catch(e){throw new Error('Response bukan JSON');}
 }
 
 function exportReliefPDF(){
-  const {jsPDF}=window.jspdf;
+  const{jsPDF}=window.jspdf;
   const doc=new jsPDF();
   const tarikh=document.getElementById('tarikh-input').value;
   const hari=document.getElementById('hari-input').value;
-  
-  if(appData.logoSekolah) doc.addImage(appData.logoSekolah,'PNG',10,10,25,25);
+  if(appData.logoSekolah)doc.addImage(appData.logoSekolah,'PNG',10,10,25,25);
   doc.setFontSize(16);doc.text(appData.namaSekolah||'SISTEM JANA RELIEF',105,18,{align:'center'});
   doc.setFontSize(12);doc.text('JADUAL GURU GANTI (RELIEF)',105,23,{align:'center'});
   doc.setFontSize(10);doc.text(`Tarikh: ${formatTarikh(tarikh)} (${hari})`,105,28,{align:'center'});
 
-  const tableData=appData.reliefJanaan.map(r=>[r.absentNama,r.slotLabel,r.kelas,r.subjek,r.guruRelifNama,r.gabung?`Dgn ${r.gabungDengan}`:'']);
-  doc.autoTable({head:[['Guru Tak Hadir','Waktu','Kelas','Subjek','Guru Ganti','Catatan']],body:tableData,startY:35,theme:'striped',styles:{fontSize:8}});
+  // Senarai guru tidak hadir dengan jenis ketidakhadiran
+  const guruAbsentTeks=appData.guruAbsentHariIni.map(g=>{
+    const jenis=g.jenisKetidakhadiran?` [${g.jenisKetidakhadiran}]`:'';
+    return g.nama+jenis;
+  }).join(', ');
+  const absentLines=doc.splitTextToSize('Guru Tidak Hadir: '+guruAbsentTeks,180);
+  doc.setFontSize(9);doc.text(absentLines,15,34);
+  const startY=34+absentLines.length*4+2;
+
+  const tableData=appData.reliefJanaan.map(r=>[
+    r.absentNama,
+    r.jenisKetidakhadiran||'-',
+    r.slotLabel,r.kelas,r.subjek,r.guruRelifNama,
+    r.gabung?`Gabung: ${r.gabungDengan}`:''
+  ]);
+  doc.autoTable({
+    head:[['Guru Tak Hadir','Jenis','Waktu','Kelas','Subjek','Guru Ganti','Catatan']],
+    body:tableData,startY,theme:'striped',styles:{fontSize:8},
+    columnStyles:{1:{cellWidth:18},2:{cellWidth:28}}
+  });
   doc.save(`Relief_${tarikh}.pdf`);
+}
+
+function exportRekodPDF(){
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF('l');
+  const dari=document.getElementById('filter-dari').value;
+  const hingga=document.getElementById('filter-hingga').value;
+  doc.setFontSize(14);doc.text(appData.namaSekolah||'REKOD RELIEF',148,15,{align:'center'});
+  doc.setFontSize(9);doc.text(`${dari||'Semua'} hingga ${hingga||'Semua'}`,148,21,{align:'center'});
+  let data=[...appData.rekod];
+  if(dari)data=data.filter(r=>r.tarikh>=dari);
+  if(hingga)data=data.filter(r=>r.tarikh<=hingga);
+  doc.autoTable({
+    startY:27,
+    head:[['Tarikh','Guru Tak Hadir','Jenis','Waktu','Kelas','Subjek','Guru Ganti','Catatan']],
+    body:data.map(r=>[r.tarikh,r.absentNama,r.jenisKetidakhadiran||'-',r.slotLabel,r.kelas,r.subjek,r.guruReliefNama,r.catatan]),
+    styles:{fontSize:7,cellPadding:2},
+    headStyles:{fillColor:[26,86,219],textColor:255,fontStyle:'bold'},
+    margin:{left:10,right:10}
+  });
+  doc.save(`RekodRelief_${dari||'all'}_${hingga||'all'}.pdf`);
 }
 
 // Init
 loadLocal();
 initData();
 populatePilihGuru();
+// Auto-sambung dan muat data dari GS
+semakSambungan();
+muatSemuaData();
 </script>
-
 </body>
 </html>
