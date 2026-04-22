@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistem Jana Relief (v1.8)</title>
+<title>Sistem Jana Relief (v1.8.1)</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <style>
@@ -110,7 +110,7 @@ tr:hover td{background:#f8fafc}
 
 <div class="app-header">
   <div>
-    <h1>📚 Sistem Jana Relief(v1.8)</h1>
+    <h1>📚 Sistem Jana Relief (v1.8.1)</h1>
     <p>Auto-assign cikgu ganti secara adil</p>
   </div>
   <div style="margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
@@ -356,7 +356,7 @@ tr:hover td{background:#f8fafc}
 
 <script>
 // ── URL GS HARDCODE ──
-const GS_URL = 'https://script.google.com/macros/s/AKfycbwNkdLv9foAWeXcLHqhXjeXC0bppKWbxbxKzu_4AKotBomcOO0wPnP0SgEA1Wt58oU4/exec';
+const GS_URL = 'https://script.google.com/macros/s/AKfycbyDqs49lqj_L911zV3WQj3aoSlzJQXvw8Mt16ecPRvlcK20WHY0Bwbb75eX_G0L9v-T/exec';
 
 const SLOT_KEYS=['W1','W2','W3','W4','Rehat1','W5','Rehat2','W6','W7','W8','W9','W10','W11','W12','W13','W14'];
 const REHAT_SLOTS=['Rehat1','Rehat2'];
@@ -861,7 +861,8 @@ function janaRelief(){
   });
 
   // Gabung kelas (syarat: max 2 kelas per guru, max 4 kelas per slot)
-  if(bilAbsent>=6){
+  // Mod Peperiksaan: TIADA gabung kelas langsung
+  if(bilAbsent>=6 && !modPeperiksaan){
     const bySlot={};
     hasil.forEach((r,i)=>{if(!bySlot[r.slot])bySlot[r.slot]=[];bySlot[r.slot].push({...r,idx:i});});
     Object.values(bySlot).forEach(items=>{
