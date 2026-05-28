@@ -234,7 +234,7 @@ tr:hover td{background:#f8fafc}
   </div>
 </div>
 
-<!-- Halaman Jadual Guru (dengan pilihan jenis slot) -->
+<!-- Halaman Jadual Guru -->
 <div class="page" id="page-jadual">
   <div class="card">
     <div class="card-title">Jadual Mengajar Guru & Jenis Slot</div>
@@ -363,7 +363,7 @@ tr:hover td{background:#f8fafc}
 
 <script>
 // ===================== KONFIGURASI =====================
-const GS_URL = 'https://script.google.com/macros/s/AKfycbyDqs49lqj_L911zV3WQj3aoSlzJQXvw8Mt16ecPRvlcK20WHY0Bwbb75eX_G0L9v-T/exec'; // GANTI DENGAN URL ANDA
+// Tiada GS_URL diperlukan kerana kita guna relative URL
 
 const SLOT_KEYS=['W1','W2','W3','W4','Rehat1','W5','Rehat2','W6','W7','W8','W9','W10','W11','W12','W13','W14'];
 const REHAT_SLOTS=['Rehat1','Rehat2'];
@@ -445,7 +445,7 @@ async function semakSambungan(){
   const text=document.getElementById('gs-status-text');
   badge.textContent='Menyemak...';badge.className='badge badge-amber';
   try{
-    const d=await gsRequest('test',{});
+    const d=await gsRequest('ping',{});
     if(d.status==='ok'){
       badge.textContent='Tersambung';badge.className='badge badge-green';
       icon.textContent='✅';text.textContent='Google Sheet berjaya disambung';
@@ -754,7 +754,7 @@ function hitungWaktuAjar(guruId,hari){
 }
 function getJenisSlot(guruId,hari,slot){
   const found=appData.jenisSlot.find(js=>js.id===guruId && js.hari===hari && js.slot===slot);
-  return found?found.jenis:'MENGAJAR';  // <-- DITUKAR
+  return found?found.jenis:'MENGAJAR';
 }
 function janaRelief(){
   const tarikh=document.getElementById('tarikh-input').value;
@@ -1105,7 +1105,9 @@ async function gsRequest(action,payload){
   Object.entries(payload).forEach(([k,v])=>{
     params.append(k,typeof v==='object'?encodeURIComponent(JSON.stringify(v)):encodeURIComponent(String(v)));
   });
-  const res=await fetch(`${GS_URL}?${params.toString()}`,{method:'GET',redirect:'follow'});
+  // GUNA RELATIVE URL (sebab satu domain)
+  const url = `?${params.toString()}`;
+  const res=await fetch(url,{method:'GET',redirect:'follow'});
   if(!res.ok)throw new Error('HTTP '+res.status);
   const text=await res.text();
   try{return JSON.parse(text);}catch(e){throw new Error('Response bukan JSON');}
