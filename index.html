@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistem Jana Relief (v2.0)</title>
+<title>Sistem Jana Relief (v2.1)</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <style>
@@ -111,8 +111,8 @@ tr:hover td{background:#f8fafc}
 
 <div class="app-header">
   <div>
-    <h1>📚 Sistem Jana Relief (v2.0)</h1>
-    <p>Auto-assign cikgu ganti secara adil + Mod Peperiksaan + Jenis Slot</p>
+    <h1>📚 Sistem Jana Relief (v2.1)</h1>
+    <p>Auto-assign cikgu ganti secara adil + Mod Peperiksaan + Jenis Slot (MENGAJAR/TUGAS)</p>
   </div>
   <div style="margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
     <span id="gs-status-badge" class="badge badge-gray">Menyambung...</span>
@@ -653,7 +653,6 @@ function renderGuruAbsentTags(){
 function modPeperiksaanChanged(){
   const isActive=document.getElementById('mod-peperiksaan-step1').checked;
   if(isActive){
-    // Auto detect guru gabungan (AG, AM, RBT Tingkatan 3)
     const hari=document.getElementById('hari-input').value;
     const kelasGabungan=['AG','AM'];
     const guruGabunganIds=[];
@@ -668,7 +667,6 @@ function modPeperiksaanChanged(){
         }
       }
     });
-    // Simpan untuk digunakan di step 2
     window._guruGabunganIds=guruGabunganIds;
   } else {
     window._guruGabunganIds=[];
@@ -695,7 +693,6 @@ function backStep2(){
 function renderPengecualianGrid(){
   const absentIds=appData.guruAbsentHariIni.map(g=>g.id);
   const avail=appData.guru.filter(g=>!absentIds.includes(g.id));
-  // Jika mod peperiksaan aktif, auto tandakan guru gabungan
   const isModExam=document.getElementById('mod-peperiksaan-step1').checked;
   if(isModExam && window._guruGabunganIds){
     window._guruGabunganIds.forEach(id=>{
@@ -757,7 +754,7 @@ function hitungWaktuAjar(guruId,hari){
 }
 function getJenisSlot(guruId,hari,slot){
   const found=appData.jenisSlot.find(js=>js.id===guruId && js.hari===hari && js.slot===slot);
-  return found?found.jenis:'MENGAJAR';
+  return found?found.jenis:'MENGAJAR';  // <-- DITUKAR
 }
 function janaRelief(){
   const tarikh=document.getElementById('tarikh-input').value;
@@ -775,7 +772,7 @@ function janaRelief(){
   guruAvail.forEach(g=>{reliefSesi[g.id]=0;});
   const waktuAjar=g=>hitungWaktuAjar(g.id,hari);
   const jadualG=g=>getJadualGuru(g.id,hari);
-  const guruDigunakanDalamSlot={}; // key: slot, value: guruId
+  const guruDigunakanDalamSlot={};
 
   function adaBuffer1(guruId,slot){
     const j=getJadualGuru(guruId,hari);
@@ -811,7 +808,6 @@ function janaRelief(){
     if(p1b.length){
       p1b.sort((a,b)=>{const wa=waktuAjar(a),wb=waktuAjar(b);if(wa!==wb)return wa-wb;return(reliefLepas[a.id]||0)-(reliefLepas[b.id]||0);});
       let calon=p1b[0];
-      // Elak guru sama dalam slot sama
       if(guruDigunakanDalamSlot[slot] && calon.id===guruDigunakanDalamSlot[slot]){
         const other=p1b.filter(g=>g.id!==calon.id);
         if(other.length) calon=other[0];
@@ -861,7 +857,6 @@ function janaRelief(){
       ?(absentGuru.waktuTertentu||[]).filter(s=>WAKTU_AJAR.includes(s))
       :WAKTU_AJAR;
     slotRelief.forEach(slot=>{
-      // Semak jenis slot untuk guru yang tidak hadir: jika TUGAS, skip
       const jenisSlotAbsent=getJenisSlot(absentGuru.id,hari,slot);
       if(jenisSlotAbsent==='TUGAS') return;
       const ks=jadualAbsent[slot];
@@ -900,7 +895,7 @@ function renderReliefOutput(){
   <table><thead><tr>
     <th>Guru Tak Hadir</th><th>Jenis</th><th>Waktu</th><th>Kelas</th><th>Subjek</th>
     <th>Guru Ganti</th><th>Status</th><th style="min-width:160px">Catatan (boleh edit)</th>
-   </tr></thead><tbody>`;
+  </tr></thead><tbody>`;
   h.forEach((r,idx)=>{
     const statusBadge=r.gabung?`<span class="badge badge-amber">Gabung: ${r.gabungDengan}</span>`:'';
     const syaratBadge=r.catatan?`<span class="badge badge-gray" style="font-size:10px;display:block;margin-top:3px">${r.catatan}</span>`:'';
@@ -920,7 +915,7 @@ function renderReliefOutput(){
         oninput="appData.reliefJanaan[${idx}].catatanGuru=this.value"></td>
     </tr>`;
   });
-  html+=`</tbody><tr></div>
+  html+=`</tbody></table></div>
   <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
     <button class="btn btn-success" onclick="simpanRekodJanaan()">💾 Simpan Rekod</button>
     <button class="btn btn-outline" onclick="exportReliefPDF()">📥 PDF</button>
@@ -967,7 +962,7 @@ function renderJadualTable(){
             <option value="MENGAJAR" ${currentJenis==='MENGAJAR'?'selected':''}>MENGAJAR</option>
             <option value="TUGAS" ${currentJenis==='TUGAS'?'selected':''}>TUGAS</option>
           </select>
-        </td>`;
+         </td>`;
       }).join('')}
     </tr>`;
   }).join('');
@@ -994,7 +989,6 @@ async function simpanJadualHariIni(){
   try{
     const updates=appData.guru.map(g=>({id:g.id,hari:hariAktif,...getJadualGuru(g.id,hariAktif)}));
     await simpanBatch(updates);
-    // Simpan jenis slot untuk hari ini
     const slotUpdates=appData.jenisSlot.filter(js=>js.hari===hariAktif);
     if(slotUpdates.length) await gsRequest('saveJenisSlot',{updates:slotUpdates});
     alert('Jadual '+hariAktif+' berjaya disimpan!');
@@ -1009,7 +1003,6 @@ async function simpanSemuaHari(){
     let all=[];
     HARI_LIST.forEach(h=>appData.guru.forEach(g=>all.push({id:g.id,hari:h,...getJadualGuru(g.id,h)})));
     await simpanBatch(all);
-    // Simpan semua jenis slot
     await gsRequest('saveJenisSlot',{updates:appData.jenisSlot});
     alert('Semua jadual (5 hari) berjaya disimpan!');
   }catch(e){alert('Gagal: '+e.message);}
