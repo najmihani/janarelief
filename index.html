@@ -238,7 +238,7 @@ tr:hover td{background:#f8fafc}
 <div class="page" id="page-jadual">
   <div class="card">
     <div class="card-title">Jadual Mengajar Guru & Jenis Slot</div>
-    <div class="alert alert-info">Klik pada mana-mana sel untuk edit kelas/subjek. Di setiap sel, terdapat juga pilihan <strong>Jenis Slot</strong> – pilih "MENGJAR" (perlu relief jika guru tak hadir) atau "TUGAS" (tidak perlu relief).</div>
+    <div class="alert alert-info">Klik pada mana-mana sel untuk edit kelas/subjek. Di setiap sel, terdapat juga pilihan <strong>Jenis Slot</strong> – pilih "MENGAJAR" (perlu relief jika guru tak hadir) atau "TUGAS" (tidak perlu relief).</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
       <input class="search-box" style="margin:0;flex:1;min-width:180px" placeholder="Cari nama guru..." id="cari-guru" oninput="renderJadualTable()">
       <button class="btn btn-primary" onclick="simpanJadualHariIni()">💾 Simpan Hari Ini</button>
@@ -757,7 +757,7 @@ function hitungWaktuAjar(guruId,hari){
 }
 function getJenisSlot(guruId,hari,slot){
   const found=appData.jenisSlot.find(js=>js.id===guruId && js.hari===hari && js.slot===slot);
-  return found?found.jenis:'MENGJAR';
+  return found?found.jenis:'MENGAJAR';
 }
 function janaRelief(){
   const tarikh=document.getElementById('tarikh-input').value;
@@ -964,7 +964,7 @@ function renderJadualTable(){
         return `<td class="${isTugas?'tugas-slot':''}" style="padding:4px">
           <input class="cell-input" value="${j[s]||''}" onchange="updateCell('${g.id}','${s}',this.value)" style="${isTugas?'background:#fee2e2':''}">
           <select style="width:100%;font-size:10px;margin-top:2px;padding:2px" onchange="updateJenisSlot('${g.id}','${s}',this.value)">
-            <option value="MENGJAR" ${currentJenis==='MENGJAR'?'selected':''}>MENGJAR</option>
+            <option value="MENGAJAR" ${currentJenis==='MENGAJAR'?'selected':''}>MENGAJAR</option>
             <option value="TUGAS" ${currentJenis==='TUGAS'?'selected':''}>TUGAS</option>
           </select>
         </td>`;
