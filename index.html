@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistem Jana Relief (v1.9.0)</title>
+<title>Sistem Jana Relief (v1.9.1)</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <style>
@@ -110,7 +110,7 @@ tr:hover td{background:#f8fafc}
 
 <div class="app-header">
   <div>
-    <h1>📚 Sistem Jana Relief (v1.9.0)</h1>
+    <h1>📚 Sistem Jana Relief (v1.9.1)</h1>
     <p>Auto-assign cikgu ganti secara adil</p>
   </div>
   <div style="margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
@@ -198,7 +198,6 @@ tr:hover td{background:#f8fafc}
         <select id="pilih-guru-absent" onchange="tambahGuruAbsent()"><option value="">-- Pilih Guru --</option></select>
         <div id="guru-absent-list" style="margin-top:8px;min-height:30px;display:flex;flex-wrap:wrap"></div>
       </div>
-      <!-- Mod Peperiksaan dipindahkan ke sini -->
       <div style="margin-top:12px;padding:10px 12px;background:#fef9c3;border:1px solid #fde68a;border-radius:8px;display:flex;align-items:center;gap:10px">
         <input type="checkbox" id="mod-peperiksaan-step1" style="width:15px;height:15px;cursor:pointer" onchange="appData.modPeperiksaan=this.checked">
         <label for="mod-peperiksaan-step1" style="margin:0;cursor:pointer;font-size:13px;color:#92400e;font-weight:600">⚠ Mod Peperiksaan — Elak pertukaran guru (guru mengajar kelas tersebut tidak akan diganti)</label>
@@ -346,10 +345,10 @@ tr:hover td{background:#f8fafc}
     </div>
   </div>
 
-  <!-- Subjek Dikecualikan -->
+  <!-- Subjek Dikecualikan Relief -->
   <div class="card">
     <div class="card-title">Subjek Dikecualikan Relief</div>
-    <p style="font-size:12px;color:#64748b;margin-bottom:12px">Subjek atau tugas yang tidak memerlukan relief (contoh: TUGAS PERKERANIAN, KAUNSELING). Slot dengan subjek ini tidak akan dijana relief.</p>
+    <p style="font-size:12px;color:#64748b;margin-bottom:12px">Subjek atau tugas yang <strong>tidak memerlukan relief</strong> (contoh: TUGAS PERKERANIAN, KAUNSELING). Slot dengan subjek ini akan <strong>dilangkau</strong> semasa janaan.</p>
     <div id="subjek-exclude-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px"></div>
     <div style="display:flex;gap:8px;align-items:center;background:#f8fafc;padding:10px;border-radius:8px;border:1px solid #e2e8f0">
       <input type="text" id="subjek-baru-input" class="input-sm" placeholder="Contoh: TUGAS PERKERANIAN" style="flex:1">
@@ -373,7 +372,7 @@ tr:hover td{background:#f8fafc}
 </div>
 
 <script>
-// ── URL GS HARDCODE ──
+// URL GS – TUKAR dengan URL deployment sendiri
 const GS_URL = 'https://script.google.com/macros/s/AKfycbyDqs49lqj_L911zV3WQj3aoSlzJQXvw8Mt16ecPRvlcK20WHY0Bwbb75eX_G0L9v-T/exec';
 
 const SLOT_KEYS=['W1','W2','W3','W4','Rehat1','W5','Rehat2','W6','W7','W8','W9','W10','W11','W12','W13','W14'];
@@ -404,7 +403,7 @@ let hariAktif='Isnin';
 
 function loadLocal(){
   try{
-    const d=JSON.parse(localStorage.getItem('reliefAppV4')||'{}');
+    const d=JSON.parse(localStorage.getItem('reliefAppV4_1')||'{}');
     if(d.namaSekolah)appData.namaSekolah=d.namaSekolah;
     if(d.logoSekolah)appData.logoSekolah=d.logoSekolah;
     if(d.waktuLabels)appData.waktuLabels=d.waktuLabels;
@@ -413,11 +412,12 @@ function loadLocal(){
     if(d.guru)appData.guru=d.guru;
     if(d.jadual)appData.jadual=d.jadual;
     if(d.rekod)appData.rekod=d.rekod;
+    if(d.modPeperiksaan !== undefined) appData.modPeperiksaan = d.modPeperiksaan;
   }catch(e){}
 }
 
 function saveLocal(){
-  localStorage.setItem('reliefAppV4',JSON.stringify({
+  localStorage.setItem('reliefAppV4_1',JSON.stringify({
     namaSekolah:appData.namaSekolah,
     logoSekolah:appData.logoSekolah,
     waktuLabels:appData.waktuLabels,
@@ -425,7 +425,8 @@ function saveLocal(){
     subjekDikecualian:appData.subjekDikecualian,
     guru:appData.guru,
     jadual:appData.jadual,
-    rekod:appData.rekod
+    rekod:appData.rekod,
+    modPeperiksaan:appData.modPeperiksaan
   }));
 }
 
@@ -443,6 +444,9 @@ function initData(){
       });
     }
   });
+  if(!appData.subjekDikecualian || !Array.isArray(appData.subjekDikecualian)){
+    appData.subjekDikecualian = [...DEFAULT_SUBJEK_DIKECUALIAN];
+  }
   saveLocal();
 }
 
@@ -456,7 +460,7 @@ function showTab(t){
   if(t==='tetapan'){renderTetapan();renderRenameGuru();renderJenisList();renderSubjekExcludeList();}
 }
 
-// ── SAMBUNGAN GS AUTOMATIK ──
+// ── SAMBUNGAN GS ──
 async function semakSambungan(){
   const badge=document.getElementById('gs-status-badge');
   const icon=document.getElementById('gs-status-icon');
@@ -814,13 +818,13 @@ function hitungWaktuAjar(guruId,hari){
   return WAKTU_AJAR.filter(s=>j[s]&&j[s].trim()).length;
 }
 
-// Fungsi pembantu untuk semak guru mengajar kelas tertentu (mod peperiksaan)
-function guruMengajarKelasIni(guruId,kelas){
-  const j=getJadualGuru(guruId,hariAktif); // guna hari semasa jana
+// Fungsi semak guru mengajar kelas tertentu (mod peperiksaan)
+function guruMengajarKelasIni(guruId,kelas,hari){
+  const j=getJadualGuru(guruId,hari);
   return WAKTU_AJAR.some(s=>{
     const sel=j[s]&&j[s].trim();
     if(!sel)return false;
-    const parts=sel.split('-');
+    const parts=sel.split(' - ');
     return parts[0].trim()===kelas;
   });
 }
@@ -845,6 +849,8 @@ function janaRelief(){
 
   // Kumpul tugasan perlu relief (kecuali subjek dikecualikan)
   const semuaTugasan = [];
+  const subjekDikecualikanUpper = appData.subjekDikecualian.map(s=>s.toUpperCase().trim());
+  
   appData.guruAbsentHariIni.forEach(absentGuru => {
     const jadualAbsent=getJadualGuru(absentGuru.id,hari);
     const slotRelief=absentGuru.jenisAbsent==='waktu'
@@ -853,11 +859,19 @@ function janaRelief(){
     slotRelief.forEach(slot=>{
       const ks=jadualAbsent[slot];
       if(!ks||!ks.trim())return;
-      const parts=ks.split(' - ');
-      const kelas=parts[0]||ks, subjekRaw=parts[1]?parts[1].trim():'';
-      const subjekUpper=subjekRaw.toUpperCase();
-      // Semak subjek dikecualikan
-      if(subjekUpper && appData.subjekDikecualian.map(s=>s.toUpperCase()).includes(subjekUpper)){
+      const teksPenuh = ks.trim();
+      let kelas = '', subjekRaw = '';
+      if (teksPenuh.includes(' - ')) {
+        const idxDash = teksPenuh.indexOf(' - ');
+        kelas = teksPenuh.substring(0, idxDash).trim();
+        subjekRaw = teksPenuh.substring(idxDash + 3).trim();
+      } else {
+        // Tiada dash, mungkin hanya subjek (contoh: "TUGAS PERKERANIAN")
+        subjekRaw = teksPenuh;
+      }
+      const subjekUpper = subjekRaw.toUpperCase();
+      if(subjekUpper && subjekDikecualikanUpper.includes(subjekUpper)){
+        // Langkau subjek yang dikecualikan
         return;
       }
       semuaTugasan.push({
@@ -982,20 +996,7 @@ function pilihGuru(slot, kelas, guruAvail, reliefLepas, reliefSesi, waktuAjar, j
   return{guru:pool[0]||null,catatan:'[Kritikal: 3 berturut tidak dapat dielak]'};
 }
 
-// Fungsi guruMengajarKelasIni versi parameter hari
-function guruMengajarKelasIni(guruId, kelas, hari){
-  const j=getJadualGuru(guruId,hari);
-  return WAKTU_AJAR.some(s=>{
-    const sel=j[s]&&j[s].trim();
-    if(!sel)return false;
-    const parts=sel.split('-');
-    return parts[0].trim()===kelas;
-  });
-}
-
-// ... (renderReliefOutput, simpanRekodJanaan, renderJadualTable, dll. kekal seperti asal) ...
-// Sertakan semua fungsi yang asal selepas ini, dipastikan tiada perubahan yang memecahkan.
-
+// renderReliefOutput, simpanRekodJanaan, renderJadualTable, dll.
 function renderReliefOutput(){
   const h=appData.reliefJanaan;
   if(!h.length){document.getElementById('relief-output').innerHTML='<div class="alert alert-warning">Tiada kelas yang perlu relief.</div>';return;}
