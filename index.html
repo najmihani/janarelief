@@ -218,6 +218,16 @@ tr:hover td{background:#f8fafc}
         <button class="btn btn-gray" onclick="backStep1()">← Kembali</button>
       </div>
     </div>
+    <div class="card">
+      <div class="card-title">🎯 Guru Bebas Tambahan</div>
+      <div class="alert alert-info">Untuk guru yang <strong>jadual penuh tetapi sebenarnya bebas</strong> (contoh: kelas ada program/aktiviti di kaunselor). Pilih guru + waktu dia bebas, sistem boleh pilih dia untuk relief waktu itu.</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#f8fafc;padding:10px;border-radius:8px;border:1px solid #e2e8f0">
+        <select id="pilih-guru-bebas" style="flex:1;min-width:180px"></select>
+        <select id="pilih-slot-bebas" style="width:170px"></select>
+        <button class="btn btn-success" onclick="tambahGuruBebas()">+ Tambah</button>
+      </div>
+      <div id="guru-bebas-list" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;min-height:30px"></div>
+    </div>
   </div>
 
   <div id="step3-panel" style="display:none">
@@ -379,6 +389,8 @@ const SLOT_KEYS=['W1','W2','W3','W4','Rehat1','W5','Rehat2','W6','W7','W8','W9',
 const REHAT_SLOTS=['Rehat1','Rehat2'];
 const WAKTU_AJAR=SLOT_KEYS.filter(s=>!REHAT_SLOTS.includes(s));
 const HARI_LIST=['Isnin','Selasa','Rabu','Khamis','Jumaat'];
+const MAX_RELIEF_SESI=2; // Had maksimum relief sehari seorang guru (adil: elak beban bertumpu)
+const MAX_DIRECT_KELAS_SAMA=2; // Maksimum relief direct berturut utk kelas SAMA (elak 3 masa direct)
 const DEFAULT_LABELS={
   W1:'Waktu 1 (7:30-8:00)',W2:'Waktu 2 (8:00-8:30)',W3:'Waktu 3 (8:30-9:00)',
   W4:'Waktu 4 (9:00-9:30)',Rehat1:'Rehat (9:30-10:00)',W5:'Waktu 5 (10:00-10:30)',
@@ -396,7 +408,7 @@ let appData={
   subjekDikecualian:[...DEFAULT_SUBJEK_DIKECUALIAN],
   modPeperiksaan: false,
   guru:[],jadual:{},rekod:[],
-  pengecualianHariIni:[],guruAbsentHariIni:[],reliefJanaan:[],
+  pengecualianHariIni:[],guruAbsentHariIni:[],guruBebasTambahan:[],reliefJanaan:[],
   currentPage:1,rekodPerPage:25
 };
 let hariAktif='Isnin';
@@ -741,7 +753,7 @@ function keStep2(){
   if(!document.getElementById('tarikh-input').value){alert('Sila pilih tarikh.');return;}
   document.getElementById('step1-panel').style.display='none';
   document.getElementById('step2-panel').style.display='block';
-  updateStepIndicator(2);renderPengecualianGrid();
+  updateStepIndicator(2);renderPengecualianGrid();populatePilihGuruBebas();renderGuruBebasList();
 }
 
 function backStep1(){
@@ -787,6 +799,39 @@ async function simpanPengecualian(){
   document.getElementById('step2-panel').style.display='none';
   document.getElementById('step3-panel').style.display='block';
   updateStepIndicator(3);renderJanaInfo();
+}
+
+// ── GURU BEBAS TAMBAHAN (kelas ada program/aktiviti) ──
+function populatePilihGuruBebas(){
+  const sel=document.getElementById('pilih-guru-bebas');
+  sel.innerHTML='<option value="">-- Pilih Guru --</option>'+appData.guru.map(g=>`<option value="${g.id}">${g.nama}</option>`).join('');
+  const selSlot=document.getElementById('pilih-slot-bebas');
+  selSlot.innerHTML=WAKTU_AJAR.map(s=>`<option value="${s}">${appData.waktuLabels[s]||s}</option>`).join('')+'<option value="SEMUA">Semua Waktu</option>';
+}
+function tambahGuruBebas(){
+  const gid=document.getElementById('pilih-guru-bebas').value;
+  const slot=document.getElementById('pilih-slot-bebas').value;
+  if(!gid){alert('Pilih guru dahulu.');return;}
+  let e=appData.guruBebasTambahan.find(x=>x.guruId===gid);
+  if(!e){e={guruId:gid,slots:[]};appData.guruBebasTambahan.push(e);}
+  if(slot==='SEMUA'){e.slots=[...new Set([...e.slots,...WAKTU_AJAR])];}
+  else if(!e.slots.includes(slot)){e.slots.push(slot);}
+  renderGuruBebasList();
+}
+function removeGuruBebas(gid,slot){
+  const e=appData.guruBebasTambahan.find(x=>x.guruId===gid);
+  if(!e)return;
+  e.slots=e.slots.filter(s=>s!==slot);
+  if(!e.slots.length)appData.guruBebasTambahan=appData.guruBebasTambahan.filter(x=>x.guruId!==gid);
+  renderGuruBebasList();
+}
+function renderGuruBebasList(){
+  const list=document.getElementById('guru-bebas-list');
+  if(!appData.guruBebasTambahan.length){list.innerHTML='<span style="font-size:12px;color:#94a3b8">Tiada guru bebas tambahan. (Kosongkan jika tiada kelas program)</span>';return;}
+  list.innerHTML=appData.guruBebasTambahan.map(e=>{
+    const nama=(appData.guru.find(g=>g.id===e.guruId)||{}).nama||e.guruId;
+    return e.slots.map(s=>`<span class="guru-absent-tag" style="background:#dcfce7;color:#166534">${nama} — ${appData.waktuLabels[s]||s} <button onclick="removeGuruBebas('${e.guruId}','${s}')">✕</button></span>`).join('');
+  }).join('');
 }
 
 function renderJanaInfo(){
@@ -843,8 +888,15 @@ function janaRelief(){
   });
   const reliefSesi={};
   guruAvail.forEach(g=>{reliefSesi[g.id]=0;});
-  const waktuAjar=g=>hitungWaktuAjar(g.id,hari);
-  const jadualG=g=>getJadualGuru(g.id,hari);
+  const bebasMap={}; // guruId -> [slots] guru bebas tambahan (kelas program)
+  appData.guruBebasTambahan.forEach(e=>{bebasMap[e.guruId]=e.slots;});
+  const jadualG=g=>{
+    const j={...getJadualGuru(g.id,hari)};
+    const slots=bebasMap[g.id];
+    if(slots)slots.forEach(s=>{j[s]='';}); // slot bebas tambahan = kosong (kelas program)
+    return j;
+  };
+  const waktuAjar=g=>WAKTU_AJAR.filter(s=>{const j=jadualG(g);return j[s]&&j[s].trim();}).length;
 
   const semuaTugasan = [];
   const subjekDikecualikanUpper = appData.subjekDikecualian.map(s=>s.toUpperCase().trim());
@@ -887,55 +939,75 @@ function janaRelief(){
   });
 
   const hasil = [];
-  Object.keys(tugasanPerSlot).sort().forEach(slot => {
+  const reliefDirect={}; // guruId -> {slotIdx,kelas,count} utk peraturan 2 direct kelas sama
+  Object.keys(tugasanPerSlot).sort((a,b)=>WAKTU_AJAR.indexOf(a)-WAKTU_AJAR.indexOf(b)).forEach(slot => {
     const tugasanSlot = tugasanPerSlot[slot];
     const usedGuruInSlot = [];
+    const kelasPerGuruInSlot = {}; // guruId -> kelas yang dia pegang dalam slot ini
+    const slotIdx=WAKTU_AJAR.indexOf(slot);
     tugasanSlot.forEach(tugasan => {
       const {kelas, subjek} = tugasan;
-      const result = pilihGuru(slot, kelas, guruAvail, reliefLepas, reliefSesi, waktuAjar, jadualG, usedGuruInSlot, modPeperiksaan, hari);
-      if(result.guru){
-        usedGuruInSlot.push(result.guru.id);
-        reliefSesi[result.guru.id] = (reliefSesi[result.guru.id]||0)+1;
-        reliefLepas[result.guru.id] = (reliefLepas[result.guru.id]||0)+1;
+      const result = pilihGuru(slot, kelas, guruAvail, reliefLepas, reliefSesi, waktuAjar, jadualG, usedGuruInSlot, modPeperiksaan, hari, bebasMap, reliefDirect);
+      let guruRelifId = result.guru ? result.guru.id : null;
+      let guruRelifNama = result.guru ? result.guru.nama : '-- Tiada Guru --';
+      let catatan = result.catatan || '';
+      let gabung = false, gabungDengan = null;
+
+      if(guruRelifId){
+        usedGuruInSlot.push(guruRelifId);
+        kelasPerGuruInSlot[guruRelifId] = kelas;
+        reliefSesi[guruRelifId] = (reliefSesi[guruRelifId]||0)+1;
+        reliefLepas[guruRelifId] = (reliefLepas[guruRelifId]||0)+1;
+        const d=reliefDirect[guruRelifId];
+        const berturut=d&&d.kelas===kelas&&slotIdx===d.slotIdx+1;
+        reliefDirect[guruRelifId]={slotIdx,kelas,count:berturut?(d.count+1):1};
+      } else if(!modPeperiksaan && usedGuruInSlot.length){
+        // Kapasiti TAK cukup (tiada calon) -> gabung dgn guru sedia ada dalam slot ini
+        // Spread beban: utamakan guru paling sedikit relief; had kecemasan = MAX+1
+        const sasaran = usedGuruInSlot
+          .map(id=>guruAvail.find(g=>g.id===id))
+          .filter(Boolean)
+          .map(g=>({g, n:(reliefSesi[g.id]||0)}))
+          .filter(s=>s.n < MAX_RELIEF_SESI + 1)
+          .sort((a,b)=>{
+            if(a.n!==b.n) return a.n-b.n;          // paling sedikit relief dulu (spread)
+            return waktuAjar(a.g)-waktuAjar(b.g);  // beban mengajar paling ringan
+          })[0];
+        if(sasaran){
+          guruRelifId = sasaran.g.id;
+          guruRelifNama = sasaran.g.nama;
+          gabung = true;
+          gabungDengan = kelasPerGuruInSlot[sasaran.g.id] || '';
+          reliefSesi[guruRelifId] = (reliefSesi[guruRelifId]||0)+1;
+          reliefLepas[guruRelifId] = (reliefLepas[guruRelifId]||0)+1;
+          catatan = (reliefSesi[guruRelifId] > MAX_RELIEF_SESI) ? '[Gabung: kecemasan]' : '[Gabung: kapasiti penuh]';
+        }
       }
+
       hasil.push({
         ...tugasan,
-        guruRelifId: result.guru ? result.guru.id : null,
-        guruRelifNama: result.guru ? result.guru.nama : '-- Tiada Guru --',
-        gabung:false, gabungDengan:null,
-        catatan: result.catatan || ''
+        guruRelifId, guruRelifNama,
+        gabung, gabungDengan,
+        catatan
       });
     });
   });
-
-  if(bilAbsent>=6 && !modPeperiksaan){
-    const bySlot={};
-    hasil.forEach((r,i)=>{if(!bySlot[r.slot])bySlot[r.slot]=[];bySlot[r.slot].push({...r,idx:i});});
-    Object.values(bySlot).forEach(items=>{
-      if(items.length>=2){
-        hasil[items[1].idx].gabung=true;
-        hasil[items[1].idx].gabungDengan=items[0].kelas;
-        hasil[items[1].idx].guruRelifId=items[0].guruRelifId;
-        hasil[items[1].idx].guruRelifNama=items[0].guruRelifNama;
-      }
-      if(items.length>=4){
-        hasil[items[3].idx].gabung=true;
-        hasil[items[3].idx].gabungDengan=items[2].kelas;
-        hasil[items[3].idx].guruRelifId=items[2].guruRelifId;
-        hasil[items[3].idx].guruRelifNama=items[2].guruRelifNama;
-      }
-    });
-  }
 
   appData.reliefJanaan=hasil;
   document.getElementById('mod-peperiksaan-notis').style.display = modPeperiksaan ? 'block' : 'none';
   renderReliefOutput();
 }
 
-function pilihGuru(slot, kelas, guruAvail, reliefLepas, reliefSesi, waktuAjar, jadualG, usedGuruInSlot, modPeperiksaan, hari){
+function pilihGuru(slot, kelas, guruAvail, reliefLepas, reliefSesi, waktuAjar, jadualG, usedGuruInSlot, modPeperiksaan, hari, bebasMap, reliefDirect){
   let pool = guruAvail.filter(g => {
     const j = jadualG(g);
-    return (!j[slot] || !j[slot].trim()) && waktuAjar(g) < 8;
+    const bebas = bebasMap && bebasMap[g.id] && bebasMap[g.id].includes(slot);
+    if(!bebas && j[slot] && j[slot].trim()) return false;      // ada kelas & bukan guru bebas tambahan
+    if(waktuAjar(g) >= 8) return false;                        // guru sangat sibuk
+    if((reliefSesi[g.id]||0) >= MAX_RELIEF_SESI) return false; // had 2 relief sehari
+    const d = reliefDirect && reliefDirect[g.id];
+    if(d && d.kelas===kelas && WAKTU_AJAR.indexOf(slot)===d.slotIdx+1 && d.count>=MAX_DIRECT_KELAS_SAMA) return false; // elak 3 direct kelas sama
+    return true;
   });
   if(modPeperiksaan && kelas){
     pool = pool.filter(g => !guruMengajarKelasIni(g.id, kelas, hari));
@@ -944,6 +1016,17 @@ function pilihGuru(slot, kelas, guruAvail, reliefLepas, reliefSesi, waktuAjar, j
     pool = pool.filter(g => !usedGuruInSlot.includes(g.id));
   }
   if(!pool.length) return {guru:null, catatan:'Tiada calon'};
+
+  // P0: Guru Bebas Tambahan (kelas program) — diutamakan (paling ringan antara mereka)
+  const p0 = pool.filter(g => bebasMap && bebasMap[g.id] && bebasMap[g.id].includes(slot));
+  if(p0.length){
+    p0.sort((a,b)=>{
+      const wa=waktuAjar(a),wb=waktuAjar(b);
+      if(wa!==wb)return wa-wb;
+      return (reliefLepas[a.id]||0)-(reliefLepas[b.id]||0);
+    });
+    return{guru:p0[0],catatan:'[P0: Guru bebas]'};
+  }
 
   function adaBuffer1(guruId,slot){
     const j=jadualG(guruId);
@@ -982,11 +1065,11 @@ function pilihGuru(slot, kelas, guruAvail, reliefLepas, reliefSesi, waktuAjar, j
     const p3ab=p3a.filter(g=>reliefSesi[g.id]===0);
     const p3c=p3ab.length?p3ab:p3a;
     p3c.sort((a,b)=>{const wa=waktuAjar(a),wb=waktuAjar(b);if(wa!==wb)return wa-wb;if(reliefSesi[a.id]!==reliefSesi[b.id])return reliefSesi[a.id]-reliefSesi[b.id];return(reliefLepas[a.id]||0)-(reliefLepas[b.id]||0);});
-    return{guru:p3c[0],catatan:'[Kritikal: buffer dilangkau]'};
+    return{guru:p3c[0],catatan:'[P3: Beban terendah]'};
   }
 
   pool.sort((a,b)=>{const wa=waktuAjar(a),wb=waktuAjar(b);if(wa!==wb)return wa-wb;if(reliefSesi[a.id]!==reliefSesi[b.id])return reliefSesi[a.id]-reliefSesi[b.id];return(reliefLepas[a.id]||0)-(reliefLepas[b.id]||0);});
-  return{guru:pool[0]||null,catatan:'[Kritikal: 3 berturut tidak dapat dielak]'};
+  return{guru:pool[0]||null,catatan:'[P4: Last resort]'};
 }
 
 function renderReliefOutput(){
